@@ -29,6 +29,7 @@ public class DataType {
      */
     public DataType(String line) {
         // Separate each data
+//        line = line.replaceAll(" ", "");
         final String[] separatedLine = line.split(SEPARATOR);
 
         for(int i = 0; i < separatedLine.length; i++) separatedLine[i] = separatedLine[i].replace(" ", "");
