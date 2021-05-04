@@ -2,6 +2,9 @@ package Models;
 
 import java.sql.Timestamp;
 
+/*
+ * Class to store data from CSV upon a format.
+ */
 public class DataType {
 
     private final String SEPARATOR = ",";
@@ -11,7 +14,11 @@ public class DataType {
     private Timestamp diagnosed_ts;
     private int contaminated_by;
 
+    /*
+     * Constructor from line in CSV.
+     */
     DataType(String line) {
+        // Separate each data
         final String[] separatedLine = line.split(SEPARATOR);
 
         person_id = Integer.parseInt(separatedLine[0]);
