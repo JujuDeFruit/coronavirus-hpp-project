@@ -115,7 +115,6 @@ public class Reader implements Runnable{
             // poison-pill
             String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
             queue.add(new DataType(poisonPill, (short) -1));
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
