@@ -24,11 +24,19 @@ public class Reader implements Runnable{
     private BufferedReader italyReader = null;
     private BufferedReader spainReader = null;
 
+    /**
+     * @param queue Blocking queue for the transit of sorted DataType
+     * @param pathToData path to the csv file containing the raw data, ex : "data\\20"
+     */
     public Reader(BlockingQueue<DataType> queue, String pathToData) {
         this.queue = queue;
         this.pathToData = pathToData;
     }
 
+    /**
+     * Open the 3 raw csv files then read them and forward a DataType corresponding
+     * to each line to the queue in an ante-chronological order (according to the person_id)
+     */
     @Override
     public void run() {
         try {
@@ -126,6 +134,10 @@ public class Reader implements Runnable{
         }
     }
 
+    /**
+     * Open the files according to @pathToData
+     * @throws IOException if the path is wrong
+     */
     public void openFile() throws IOException {
         // France
         franceFR = new FileReader(pathToData + "/France.csv");
@@ -138,6 +150,10 @@ public class Reader implements Runnable{
         spainReader = new BufferedReader(spainFR);
     }
 
+    /**
+     * Close all the potentially opened readers.
+     * @throws IOException won't throw it
+     */
     public void closeFile() throws IOException {
         // France
         if (franceReader != null)
