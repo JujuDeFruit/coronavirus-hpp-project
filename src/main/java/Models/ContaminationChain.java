@@ -65,12 +65,11 @@ public class ContaminationChain {
             // Compare date of the contaminated person with the first one of the chain.
             final double compare = TimeStamp.getHoursDifference(ts, time);
 
-            if (compare > 0.0) {
-                if (compare <= 168.0) {
-                    score += 10;
-                } else if (compare <= 336.0) {
-                    score += 4;
-                }
+            
+            if (compare <= 168.0) {
+                score += 10;
+            } else if (compare <= 336.0) {
+                score += 4;
             }
         }
         return score == 0;
