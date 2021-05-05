@@ -1,4 +1,4 @@
-package TestsUtils;
+package Utils;
 
 import java.sql.Timestamp;
 

@@ -1,4 +1,4 @@
-package TestsUtils;
+package Utils;
 
 import org.junit.Test;
 
@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 import static org.junit.Assert.assertEquals;
 
-import static TestsUtils.TimeStamp.getHoursDifference;
+import static Utils.TimeStamp.getHoursDifference;
 
 public class TestsTimeStamp {
 

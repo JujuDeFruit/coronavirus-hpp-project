@@ -1,6 +1,6 @@
 package Models;
 
-import TestsUtils.TimeStamp;
+import Utils.TimeStamp;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
