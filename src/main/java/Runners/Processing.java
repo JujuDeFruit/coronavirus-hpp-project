@@ -1,6 +1,8 @@
 package Runners;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,11 +11,14 @@ import Models.ContaminationChain;
 import Models.DataType;
 
 public class Processing implements Runnable {
-	private BlockingQueue<DataType> queue_ = null;
-	private Vector<ContaminationChain> VectorOfContaminationChain_=null;
+	private final BlockingQueue<DataType> inQueue_;
+	private final BlockingQueue<Vector<ContaminationChain>> outQueue_;
+	private Vector<ContaminationChain> VectorOfContaminationChain_=null;	
+	private boolean ending=false; 
 	
-	Processing(BlockingQueue<DataType> Queue, Vector<ContaminationChain> VectorOfContaminationChain){
-		queue_=Queue;
+	Processing(BlockingQueue<DataType> inQueue, BlockingQueue<Vector<ContaminationChain>> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
+		inQueue_=inQueue;
+		outQueue_=outQueue;
 		VectorOfContaminationChain_=VectorOfContaminationChain;
 	}
 	
@@ -21,12 +26,13 @@ public class Processing implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-			DataType onePerson = queue_.take();
+			DataType onePerson = inQueue_.take();
 			while(!onePerson.getPerson().equals("Poison PILL")) {
 				processId(onePerson);
-				onePerson = queue_.take();
+				outQueue_.add(new Vector<ContaminationChain>(VectorOfContaminationChain_));
+				onePerson = inQueue_.take();
 			}
-			queue_.add(new DataType("9, \"Poison\", \"PILL\", 1924-03-17 00:00:00, 1585699579.2617905, 4, \"Une fin est toujours un début\""));
+			inQueue_.add(new DataType("9, \"Poison\", \"PILL\", 1924-03-17 00:00:00, 1585699579.2617905, 4, \"Une fin est toujours un début\""));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -34,14 +40,35 @@ public class Processing implements Runnable {
 	}
 		
 	private void processId(DataType myPerson){
+		VectorOfContaminationChain_.forEach((myContaminationChain)->{
+			//if(myContaminationChain))
+		});
+		
 		if(myPerson.getContaminated_by()==-1) {
-			VectorOfContaminationChain_.add(new ContaminationChain());
+			VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
 			//return;
 		}else {
-			// etc ... 
+			// etc ...
+			ending=false;
 			VectorOfContaminationChain_.forEach((myContaminationChain)->{
-				myContaminationChain
+				List<Integer> listOfIdContamination = myContaminationChain.getContaminationId();
+				ListIterator<Integer> iterator = listOfIdContamination.listIterator(listOfIdContamination.size());
+				int contaminatedBy = myPerson.getContaminated_by();
+				while(iterator.hasPrevious() && ending==false) {
+					ending=iterator.equals(contaminatedBy);
+					iterator.previous();
+				}
+				if(ending==true) {
+					myContaminationChain.push(myPerson);
+				}		
+				
+				//queue.add(new vector(^mon vector);
 			});
+			//if ending=false mean that the person was contaminated by a chain with a score of 0 so she has been destroyed 
+			if(ending==false) {
+				
+				
+			}
 		}
 	}
 }

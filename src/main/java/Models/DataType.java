@@ -21,6 +21,7 @@ public class DataType {
     private String person;
     private Timestamp diagnosed_ts;
     private int contaminated_by;
+    private short country_id;
 
     /**
      * Constructor from line in CSV.
@@ -74,4 +75,10 @@ public class DataType {
     public int getContaminated_by() {
         return contaminated_by;
     }
+    
+    /**
+    *
+    * @return ID of the country
+    */
+    public short getCountry_id() { return country_id; }
 }
