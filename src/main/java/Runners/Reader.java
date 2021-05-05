@@ -37,28 +37,40 @@ public class Reader implements Runnable{
             // int to know which file contains the data to forward to the queue between france(0), italy(1) and spain(2)
             short countryMem = -1;
             // String array storing the current split line per file
-            String[] franceSplit, italySplit, spainSplit;
+            String[] franceSplit = null, italySplit = null, spainSplit = null;
             // int storing the current id per file
             int franceId = 0, italyId = 0, spainId = 0;
 
             String franceLine = franceReader.readLine();
             String italyLine = italyReader.readLine();
             String spainLine = spainReader.readLine();
-            while (franceLine != null && italyLine != null && spainLine != null) {
+            while (franceLine != null || italyLine != null || spainLine != null) {
                 // Split line to get id if the previous data was not already split
                 // (e.g. either when the data was forwarded to queue or when it is the first time we enter the loop)
                 switch (countryMem) {
                     case 0: // only france needs to be split
-                        franceSplit = franceLine.replaceAll(" ", "").split(",");
-                        franceId = Integer.parseInt(franceSplit[0]);
+                        if (franceLine != null){
+                            franceSplit = franceLine.replaceAll(" ", "").split(",");
+                            franceId = Integer.parseInt(franceSplit[0]);
+                        } else {
+                            franceId = Integer.MAX_VALUE;
+                        }
                         break;
                     case 1: // only italy needs to be split
-                        italySplit = italyLine.replaceAll(" ", "").split(",");
-                        italyId = Integer.parseInt(italySplit[0]);
+                        if (italyLine != null){
+                            italySplit = italyLine.replaceAll(" ", "").split(",");
+                            italyId = Integer.parseInt(italySplit[0]);
+                        } else {
+                            italyId = Integer.MAX_VALUE;
+                        }
                         break;
                     case 2: // only spain needs to be split
-                        spainSplit = spainLine.replaceAll(" ", "").split(",");
-                        spainId = Integer.parseInt(spainSplit[0]);
+                        if (spainLine != null){
+                            spainSplit = spainLine.replaceAll(" ", "").split(",");
+                            spainId = Integer.parseInt(spainSplit[0]);
+                        } else {
+                            spainId = Integer.MAX_VALUE;
+                        }
                         break;
                     default: // all lines needs to be split
                         franceSplit = franceLine.replaceAll(" ", "").split(",");
@@ -85,15 +97,15 @@ public class Reader implements Runnable{
                 // Forward the minimum id data to the queue and go to the next line for this country
                 switch (countryMem){
                     case 0:
-                        queue.add(new DataType(franceLine));
+                        queue.add(new DataType(franceSplit, countryMem));
                         franceLine = franceReader.readLine();
                         break;
                     case 1:
-                        queue.add(new DataType(italyLine));
+                        queue.add(new DataType(italySplit, countryMem));
                         italyLine = italyReader.readLine();
                         break;
                     case 2:
-                        queue.add(new DataType(spainLine));
+                        queue.add(new DataType(spainSplit, countryMem));
                         spainLine = spainReader.readLine();
                         break;
                     default:
@@ -101,15 +113,9 @@ public class Reader implements Runnable{
                 }
             }
             // poison-pill
-            queue.add(new DataType("-1, \"\", \"\", 0000-00-00 00:00:00, 0, unknown, \"\""));
+            String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
+            queue.add(new DataType(poisonPill, (short) -1));
 
-            for (int i=0; i<queue.size(); i++){
-                try{
-                    System.out.println(queue.take().getPerson_id());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

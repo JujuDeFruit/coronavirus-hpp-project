@@ -48,21 +48,21 @@ public class ReaderTest {
         service.execute(reader);
         // Wait for end of thread
         ThreadUtils.shutdownAndAwaitTermination(service);
-//        // Verify order
-//        for (int i=0; i<queue.size() - 1; i++){
-//            try{
-//                int currentId = queue.take().getPerson_id();
-//                assertEquals(i+1, currentId);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        // Verify poison-pill
-//        try{
-//            int currentId = queue.take().getPerson_id();
-//            assertEquals(-1, currentId);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        // Verify order
+        for (int i=0; i<20; i++){
+            try{
+                int currentId = queue.take().getPerson_id();
+                assertEquals(i, currentId);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // Verify poison-pill
+        try{
+            int currentId = queue.take().getPerson_id();
+            assertEquals(-1, currentId);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
