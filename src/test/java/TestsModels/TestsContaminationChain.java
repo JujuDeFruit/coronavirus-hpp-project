@@ -1,9 +1,8 @@
 package TestsModels;
 
-
-import Models.DataType;
 import org.junit.Test;
 
+import Models.DataType;
 import Models.ContaminationChain;
 
 import java.sql.Timestamp;
