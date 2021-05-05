@@ -82,7 +82,6 @@ public class Reader implements Runnable{
                 if (spainId < temp){
                     countryMem = 2;
                 }
-
                 // Forward the minimum id data to the queue and go to the next line for this country
                 switch (countryMem){
                     case 0:
@@ -92,15 +91,25 @@ public class Reader implements Runnable{
                     case 1:
                         queue.add(new DataType(italyLine));
                         italyLine = italyReader.readLine();
+                        break;
                     case 2:
                         queue.add(new DataType(spainLine));
                         spainLine = spainReader.readLine();
+                        break;
                     default:
                         System.out.println("Couldn't find a min ?");
                 }
             }
             // poison-pill
             queue.add(new DataType("-1, \"\", \"\", 0000-00-00 00:00:00, 0, unknown, \"\""));
+
+            for (int i=0; i<queue.size(); i++){
+                try{
+                    System.out.println(queue.take().getPerson_id());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -124,7 +133,7 @@ public class Reader implements Runnable{
         spainReader = new BufferedReader(spainFR);
     }
 
-    private void closeFile() throws IOException {
+    public void closeFile() throws IOException {
         // France
         if (franceReader != null)
             franceReader.close();
