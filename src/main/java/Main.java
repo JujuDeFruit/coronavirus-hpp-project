@@ -1,4 +1,3 @@
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,27 +9,27 @@ import Utils.*;
 
 public class Main {
 	
-	public void main(String args[]) {
-		this.process();
+	public static void main(String args[]) {
+		process("data\\20");
 	}
 	
-	public void process() {
-		//Instanciate every components
-		BlockingQueue<DataType> q = new LinkedBlockingQueue<DataType>();
-		Reader reader = new Reader(q, "src\\main\\resources\\Test"); //Add Test to read TestFrance.csv
-		//ArrayBlockingQueue<DataType> q = new ArrayBlockingQueue<DataType>();
-		//Writer writer = new Writer(q);
-		ExecutorService service = Executors.newFixedThreadPool(5); //5 is the limit
+	public static void process(String path) {
+		//Instantiate every components
+		BlockingQueue<DataType> inQueue = new LinkedBlockingQueue<>();
+		BlockingQueue<DataType> outQueue = new LinkedBlockingQueue<>();
+		Reader reader = new Reader(inQueue, path);
+//		Writer writer = new Writer(outQueue);
+		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
 
 		//Start timer
 		long startTime = System.nanoTime();
 		service.execute(reader);
 		//service.execute(writer);
 		
-		//Wait for the threads
+		//Wait for the threads to end
 		ThreadUtils.shutdownAndAwaitTermination(service);
-		//Calculate execution time
-		long endTime = System.nanoTime(); //100-300ns without traversing any array
 
+		//Print execution time
+		System.out.println(System.nanoTime()-startTime);
 	}
 }
