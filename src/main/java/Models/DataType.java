@@ -27,11 +27,14 @@ public class DataType {
     /**
      * Constructor from line in CSV.
      *
-     * @param person_id_string : person ID in string format.
-     * @param person_name_string : person name in string format.
-     * @param person_surname_string : person surname in string format.
-     * @param diagnosed_ts_string : Timestamp when person was diagnosed as sick in string format.
-     * @param contaminated_by_string : ID of the person who contaminated this one in string format.
+     * @param splitLine : result of the splitting of one line from a file
+     *                  <ul>
+     *                  <li>0 : person ID in string format</li>
+     *                  <li>1 : person name in string format</li>
+     *                  <li>2 : person surname in string format</li>
+     *                  <li>4 : Timestamp when person was diagnosed as sick in string format</li>
+     *                  <li>5 : ID of the person who contaminated this one in string format</li>
+     *                  </ul>
      * @param country_id_ : ID of the country of the person
      *                   <ul>
      *                   <li>0 : France</li>
@@ -39,13 +42,13 @@ public class DataType {
      *                   <li>2 : Spain</li>
      *                   </ul>
      */
-    public DataType(String person_id_string, String person_name_string, String person_surname_string, String diagnosed_ts_string, String contaminated_by_string, short country_id_) {
+    public DataType(String[] splitLine, short country_id_) {
 
-        person_id = Integer.parseInt(person_id_string);
+        person_id = Integer.parseInt(splitLine[0]);
         // Remove quotes from names
-        person = person_name_string.replace("\"", "") + " " + person_surname_string.replace("\"", "");
-        diagnosed_ts = new Timestamp((long)(Double.parseDouble(diagnosed_ts_string)*1000));
-        contaminated_by = contaminated_by_string.equals("unknown") ? -1 : Integer.parseInt(contaminated_by_string);
+        person = splitLine[1].replace("\"", "") + " " + splitLine[2].replace("\"", "");
+        diagnosed_ts = new Timestamp((long)Double.parseDouble(splitLine[4]));
+        contaminated_by = splitLine[5].equals("unknown") ? -1 : Integer.parseInt(splitLine[5]);
         country_id = country_id_;
     }
 
