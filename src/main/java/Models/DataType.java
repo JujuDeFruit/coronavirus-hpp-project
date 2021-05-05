@@ -11,6 +11,7 @@ import java.sql.Timestamp;
  * <li> person : Name of the person.</li>
  * <li> diagnosed_ts : Timestamp when person was contaminated.</li>
  * <li> contaminated_by : ID of the person who contaminated this one.</li>
+ * <li> contaminated_by : ID of the country.</li>
  * </ul>
  */
 public class DataType {
@@ -19,6 +20,7 @@ public class DataType {
     private String person;
     private Timestamp diagnosed_ts;
     private int contaminated_by;
+    private short country_id;
 
     /**
      * Constructor from line in CSV.
@@ -28,15 +30,21 @@ public class DataType {
      * @param person_surname_string : person surname in string format.
      * @param diagnosed_ts_string : Timestamp when person was diagnosed as sick in string format.
      * @param contaminated_by_string : ID of the person who contaminated this one in string format.
+     * @param country_id_ : ID of the country of the person
+     *                   <ul>
+     *                   <li>0 : France</li>
+     *                   <li>1 : Italy</li>
+     *                   <li>2 : Spain</li>
+     *                   </ul>
      */
-    public DataType(String person_id_string, String person_name_string, String person_surname_string, String diagnosed_ts_string, String contaminated_by_string) {
+    public DataType(String person_id_string, String person_name_string, String person_surname_string, String diagnosed_ts_string, String contaminated_by_string, short country_id_) {
 
         person_id = Integer.parseInt(person_id_string);
         // Remove quotes from names
         person = person_name_string.replace("\"", "") + " " + person_surname_string.replace("\"", "");
         diagnosed_ts = new Timestamp((long)Double.parseDouble(diagnosed_ts_string));
         contaminated_by = contaminated_by_string.equals("unknown") ? -1 : Integer.parseInt(contaminated_by_string);
-
+        country_id = country_id_;
     }
 
     /* Getters */
@@ -72,4 +80,10 @@ public class DataType {
     public int getContaminated_by() {
         return contaminated_by;
     }
+
+    /**
+     *
+     * @return ID of the country
+     */
+    public short getCountry_id() { return country_id; }
 }
