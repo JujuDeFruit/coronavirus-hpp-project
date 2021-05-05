@@ -18,7 +18,7 @@ public class Writer implements Runnable {
 		this.iQueue = q;
 		this.pw = null;
 		try {
-            pw = new PrintWriter(new File("Data.csv"));
+            pw = new PrintWriter(new File("src\\main\\resources\\Data.csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
