@@ -15,8 +15,6 @@ import java.sql.Timestamp;
  */
 public class DataType {
 
-    private final String SEPARATOR = ",";
-
     private int person_id;
     private String person;
     private Timestamp diagnosed_ts;
@@ -25,19 +23,19 @@ public class DataType {
     /**
      * Constructor from line in CSV.
      *
-     * @param line : CSV line.
+     * @param person_id_string : person ID in string format.
+     * @param person_name_string : person name in string format.
+     * @param person_surname_string : person surname in string format.
+     * @param diagnosed_ts_string : Timestamp when person was diagnosed as sick in string format.
+     * @param contaminated_by_string : ID of the person who contaminated this one in string format.
      */
-    public DataType(String line) {
-        // Separate each data
-        final String[] separatedLine = line.split(SEPARATOR);
+    public DataType(String person_id_string, String person_name_string, String person_surname_string, String diagnosed_ts_string, String contaminated_by_string) {
 
-        for(int i = 0; i < separatedLine.length; i++) separatedLine[i] = separatedLine[i].replace(" ", "");
-
-        person_id = Integer.parseInt(separatedLine[0]);
+        person_id = Integer.parseInt(person_id_string);
         // Remove quotes from names
-        person = separatedLine[1].replace("\"", "") + " " + separatedLine[2].replace("\"", "");
-        diagnosed_ts = new Timestamp((long)Double.parseDouble(separatedLine[4]));
-        contaminated_by = separatedLine[5].equals("unknown") ? -1 : Integer.parseInt(separatedLine[5]);
+        person = person_name_string.replace("\"", "") + " " + person_surname_string.replace("\"", "");
+        diagnosed_ts = new Timestamp((long)Double.parseDouble(diagnosed_ts_string));
+        contaminated_by = contaminated_by_string.equals("unknown") ? -1 : Integer.parseInt(contaminated_by_string);
 
     }
 
