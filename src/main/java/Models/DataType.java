@@ -16,11 +16,11 @@ import java.sql.Timestamp;
  */
 public class DataType {
 
-    private int person_id;
-    private String person;
-    private Timestamp diagnosed_ts;
-    private int contaminated_by;
-    private short country_id;
+    private final int person_id;
+    private final String person;
+    private final Timestamp diagnosed_ts;
+    private final int contaminated_by;
+    private final short country_id;
 
     /**
      * Constructor from line in CSV.
