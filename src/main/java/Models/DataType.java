@@ -42,7 +42,7 @@ public class DataType {
         person_id = Integer.parseInt(person_id_string);
         // Remove quotes from names
         person = person_name_string.replace("\"", "") + " " + person_surname_string.replace("\"", "");
-        diagnosed_ts = new Timestamp((long)Double.parseDouble(diagnosed_ts_string));
+        diagnosed_ts = new Timestamp((long)(Double.parseDouble(diagnosed_ts_string)*1000));
         contaminated_by = contaminated_by_string.equals("unknown") ? -1 : Integer.parseInt(contaminated_by_string);
         country_id = country_id_;
     }
