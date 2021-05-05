@@ -14,12 +14,13 @@ public class WriterTest {
 
 	@Test
 		public void Test() throws Exception{
+			
 			ArrayBlockingQueue<String> q = new ArrayBlockingQueue<>(32);
 			q.add("a");
 			q.add("b");
 			q.add("c");
 			Writer julesVerne = new Writer(q);
-			julesVerne.run();
+			new Thread(julesVerne).start();
 			
 			//Scanner reads EOL char
 			String excpected = "aaa"+ "\r\n" + 
@@ -36,5 +37,7 @@ public class WriterTest {
 			
 			System.out.println(readStrings);
 			assertEquals(excpected, readStrings);
+			
+			
 		}
 }
