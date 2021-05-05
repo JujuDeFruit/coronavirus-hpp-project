@@ -3,10 +3,13 @@ package Runners;
 import static org.junit.Assert.*;
 
 import Models.DataType;
+import Utils.ThreadUtils;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ReaderTest {
@@ -23,13 +26,14 @@ public class ReaderTest {
     }
     /**
      * We call {@link Reader#Reader(BlockingQueue, String)}
-     * with a correct path to the files.
+     * with a correct path to the files, then we close it.
      */
     @Test
     public void testRead() throws IOException {
         BlockingQueue<DataType> queue = new LinkedBlockingQueue<DataType>();
         Reader reader = new Reader(queue, "data\\20");
         reader.openFile();
+        reader.closeFile();
     }
     /**
      * Test to check if the Reader read forwards the information
@@ -37,8 +41,28 @@ public class ReaderTest {
      */
     @Test
     public void testForwardOrder(){
+        BlockingQueue<DataType> queue = new LinkedBlockingQueue<DataType>();
+        Reader reader = new Reader(queue, "data\\20");
+        ExecutorService service = Executors.newFixedThreadPool(1);
         // Start reader
+        service.execute(reader);
         // Wait for end of thread
-        // Verify order
+        ThreadUtils.shutdownAndAwaitTermination(service);
+//        // Verify order
+//        for (int i=0; i<queue.size() - 1; i++){
+//            try{
+//                int currentId = queue.take().getPerson_id();
+//                assertEquals(i+1, currentId);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        // Verify poison-pill
+//        try{
+//            int currentId = queue.take().getPerson_id();
+//            assertEquals(-1, currentId);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }
