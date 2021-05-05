@@ -1,6 +1,7 @@
 package Models;
 
-import java.sql.Date;
+
+import Utils.TimeStamp;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,16 @@ import java.util.List;
  */
 public class ContaminationChain {
 
-    private short country_id;
+
+    private final short country_id;
     private int score;
-    private List<Integer> contaminationId;
-    private List<Timestamp> contaminationTs;
+    private final List<Integer> contaminationId;
+    private final List<Timestamp> contaminationTs;
+
+    /**
+     * Constructor of the contamination chain.
+     * @param firstPerson first person that created contamination chain.
+     */
 
     public ContaminationChain(DataType firstPerson) {
         contaminationId = new ArrayList<Integer>();
@@ -35,43 +42,67 @@ public class ContaminationChain {
         contaminationTs.add(firstPerson.getDiagnosed_ts());
     }
 
+
+    /**
+     * Push a person into the contamination chain.
+     * @param person person to add to the chain
+     */
     public void push (DataType person) {
 
-        // Leave function if person to add was not contaminated by last person of the chain.
-        if (person.getContaminated_by() != contaminationId.get(contaminationId.size() - 1)) return;
-
-        // Compare date of the contaminated person with the first one of the chain.
-        Date firstDate = new Date(contaminationTs.get(0).getTime());
-        final int compare = firstDate.compareTo(new Date(person.getDiagnosed_ts().getTime()));
-
-        if (compare > 0) {
-            if (compare <= 7) {
-                score += 10;
-            }
-            else if (compare <= 14) {
-                score += 4;
-            }
-
+        // If score is superior to 0, then add the person
+        if (score > 0) {
             contaminationId.add(person.getPerson_id());
             contaminationTs.add(person.getDiagnosed_ts());
         }
-        /*else if (compare < 0) {
-            contaminationId.set(0, person.getPerson_id());
-            contaminationTs.set(0, person.getDiagnosed_ts());
-        }*/
     }
 
-    /* Getters */
+    /**
+     * Calculate score from a reference timestamp.
+     * @param time reference timestamp.
+     * @return boolean to inform if score is 0 or not.
+     */
+    public boolean calculateScore(Timestamp time) {
+        score = 0;
+        // Browse contamination time
+        for (Timestamp ts : contaminationTs) {
+            // Compare date of the contaminated person with the first one of the chain.
+            final double compare = TimeStamp.getHoursDifference(ts, time);
+
+            
+            if (compare <= 168.0) {
+                score += 10;
+            } else if (compare <= 336.0) {
+                score += 4;
+            }
+        }
+        return score == 0;
+    }
+
+    /***** Getters *****/
+
+    /**
+     *
+     * @return IDs in the contaminated persons.
+     */
+    public List<Integer> getContaminationId() { return contaminationId; }
+
+    /**
+     *
+     * @return Timestamps of contaminated persons.
+     */
+    public List<Timestamp> getContaminationTs() { return contaminationTs; }
+
+    /**
+     *
+     * @return ID of the country of the first person.
+     */
+    public short getCountry_id() { return country_id; }
+
 
     /**
      *
      * @return score of the chain.
      */
     public int getScore() { return score; }
-    
-    /**
-    *
-    * @return 
-    */
-    public List<Integer> getContaminationId() {return contaminationId; }
+
 }
