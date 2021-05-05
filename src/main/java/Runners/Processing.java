@@ -1,6 +1,7 @@
 package Runners;
 
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -9,11 +10,11 @@ import Models.DataType;
 
 public class Processing implements Runnable {
 	private BlockingQueue<DataType> queue_ = null;
-	private ArrayList<ContaminationChain> ArrayOfContaminationChain_=null;
+	private Vector<ContaminationChain> VectorOfContaminationChain_=null;
 	
-	Processing(BlockingQueue<DataType> Queue, ArrayList<ContaminationChain> ArrayOfContaminationChain){
+	Processing(BlockingQueue<DataType> Queue, Vector<ContaminationChain> VectorOfContaminationChain){
 		queue_=Queue;
-		ArrayOfContaminationChain_=ArrayOfContaminationChain;
+		VectorOfContaminationChain_=VectorOfContaminationChain;
 	}
 	
 	@Override
@@ -34,10 +35,13 @@ public class Processing implements Runnable {
 		
 	private void processId(DataType myPerson){
 		if(myPerson.getContaminated_by()==-1) {
-			ArrayOfContaminationChain_.add(new ContaminationChain());
+			VectorOfContaminationChain_.add(new ContaminationChain());
 			//return;
 		}else {
 			// etc ... 
+			VectorOfContaminationChain_.forEach((myContaminationChain)->{
+				myContaminationChain
+			});
 		}
 	}
 }
