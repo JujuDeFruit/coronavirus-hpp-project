@@ -1,5 +1,7 @@
 package Models;
 
+import Utils.TimeStamp;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -41,14 +43,13 @@ public class ContaminationChain {
         if (person.getContaminated_by() != contaminationId.get(contaminationId.size() - 1)) return;
 
         // Compare date of the contaminated person with the first one of the chain.
-        Date firstDate = new Date(contaminationTs.get(0).getTime());
-        final int compare = firstDate.compareTo(new Date(person.getDiagnosed_ts().getTime()));
+        final double compare = TimeStamp.getHoursDifference(person.getDiagnosed_ts(), contaminationTs.get(0));
 
-        if (compare > 0) {
-            if (compare <= 7) {
+        if (compare > 0.0) {
+            if (compare <= 168.0) {
                 score += 10;
             }
-            else if (compare <= 14) {
+            else if (compare <= 336.0) {
                 score += 4;
             }
 
