@@ -50,14 +50,8 @@ public class Processing implements Runnable {
 			DataType onePerson = inQueue_.take();
 			//while we don't reach the poison pill "-1" do:
 			while(onePerson.getPerson_id()!=-1) {
-				processId(onePerson);
-
-				//
-				int size = VectorOfContaminationChain_.size();
-				ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
-				outQueue_.add(top3);
-				//we take a other person
-
+				processId(onePerson);				
+				//we take another person
 				onePerson = inQueue_.take();
 			}
 			// poison-pill
@@ -85,24 +79,18 @@ public class Processing implements Runnable {
 		} else {
 			// etc ...
 			ending=false;
-			VectorOfContaminationChain_.forEach((myContaminationChain)->{
-				List<Integer> listOfIdContamination = myContaminationChain.getContaminationId();
-				ListIterator<Integer> iterator = listOfIdContamination.listIterator(listOfIdContamination.size());
-				int contaminatedBy = myPerson.getContaminated_by();
-				while(iterator.hasPrevious() && ending==false) {
-					ending=iterator.equals(contaminatedBy);
-					iterator.previous();
-				}
-				if(ending==true) {
-					myContaminationChain.push(myPerson);
-				}	
-			});
+			int i=0;
+			while(i<VectorOfContaminationChain_.size() && !ending) {
+				ending=VectorOfContaminationChain_.get(i).push(myPerson);
+				i++;
+			}			
 			//if ending=false mean that the person was contaminated by a chain with a score of 0 so she has been destroyed 
 			if(ending==false) {
 				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));						
 			}
 		}
-		processSort();
+		//processSort();
+		Collections.sort(VectorOfContaminationChain_, Comparator.comparing(ContaminationChain::getScore));
 		int size = VectorOfContaminationChain_.size();
 		if (size >= 3) {
 			ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
@@ -117,3 +105,19 @@ public class Processing implements Runnable {
 		Collections.sort(VectorOfContaminationChain_, Comparator.comparing(ContaminationChain::getScore));
 	}
 }
+
+
+
+//List<Integer> listOfIdContamination = myContaminationChain.getContaminationId();
+//ListIterator<Integer> iterator = listOfIdContamination.listIterator(listOfIdContamination.size());
+//int contaminatedBy = myPerson.getContaminated_by();
+//while(iterator.hasPrevious() && ending==false) {
+//	ending=iterator.equals(contaminatedBy);
+//	iterator.previous();
+//}
+/*VectorOfContaminationChain_.forEach((myContaminationChain)->{
+				
+				if(ending==true) {
+					myContaminationChain.push(myPerson);
+				}	
+			});*/
