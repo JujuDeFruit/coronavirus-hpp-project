@@ -49,11 +49,9 @@ public class ContaminationChain {
      */
     public void push (DataType person) {
 
-        // If score is superior to 0, then add the person
-        if (score > 0) {
-            contaminationId.add(person.getPerson_id());
-            contaminationTs.add(person.getDiagnosed_ts());
-        }
+        // If score is superior to 0, then add the person        
+        contaminationId.add(person.getPerson_id());
+        contaminationTs.add(person.getDiagnosed_ts());        
     }
 
     /**
@@ -97,7 +95,6 @@ public class ContaminationChain {
      * @return ID of the country of the first person.
      */
     public short getCountry_id() { return country_id; }
-
 
     /**
      *
