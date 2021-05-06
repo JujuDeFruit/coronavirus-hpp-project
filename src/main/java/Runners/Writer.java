@@ -1,20 +1,21 @@
 package Runners;
 
+import Models.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Writer implements Runnable {
 	
-	private ArrayBlockingQueue<String> iQueue;
+	private BlockingQueue<ContaminationChain []> iQueue;
 	private String result;
 
 	private StringBuilder builder;
 	private PrintWriter pw;
 	
-	Writer(ArrayBlockingQueue<String> q){
+	Writer(BlockingQueue<ContaminationChain []> q){
 		this.iQueue = q;
 		this.pw = null;
 		try {
@@ -33,14 +34,12 @@ public class Writer implements Runnable {
 		{
 			//get top1_country_origin, top1_chain_root_person_id, top1_chain_score; top2_country_origin, top2_chain_root_person_id, top2_chain_score; top3_country_origin, top3_chain_root_person_id, top3_chain_score
 			//Assuming chaine1 is top1 chain
-			String chain1= this.iQueue.poll();
-			String chain2= this.iQueue.poll();
-			String chain3= this.iQueue.poll();
+			ContaminationChain[] chains= this.iQueue.poll();
 			
 			//Use chain1.country_origin/chain_root_person_id/chain_score
-			result = chain1 + ',' + chain1 + ',' + chain1 + "\r\n";
-			result += chain2 + ',' + chain2 + ',' + chain2 + "\r\n";
-			result += chain3 + ',' + chain3 + ',' + chain3 + "\r\n";
+			result = "chains[0].getCountry_id()" + ',' + "chain1[0].getRoot_id()" + ',' + chains[0].getScore() + "\r\n";
+			result = "chains[1].getCountry_id()" + ',' + "chain1[1].getRoot_id()" + ',' + chains[1].getScore() + "\r\n";
+			result = "chains[2].getCountry_id()" + ',' + "chain1[2].getRoot_id()" + ',' + chains[2].getScore() + "\r\n";
 			this.builder.append(result);
 			try {
 				writeResult();

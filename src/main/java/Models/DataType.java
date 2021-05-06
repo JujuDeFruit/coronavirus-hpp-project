@@ -2,9 +2,6 @@ package Models;
 
 import java.sql.Timestamp;
 
-/*
- * Class to store data from CSV upon a format.
-=======
 /**
  * Class to store data from CSV upon a format.
  *
@@ -14,52 +11,43 @@ import java.sql.Timestamp;
  * <li> person : Name of the person.</li>
  * <li> diagnosed_ts : Timestamp when person was contaminated.</li>
  * <li> contaminated_by : ID of the person who contaminated this one.</li>
+ * <li> contaminated_by : ID of the country.</li>
  * </ul>
->>>>>>> 2-Processing
  */
 public class DataType {
-
-    private final String SEPARATOR = ",";
 
     private int person_id;
     private String person;
     private Timestamp diagnosed_ts;
     private int contaminated_by;
-
-    /*
-     * Constructor from line in CSV.
-     */
-    DataType(String line) {
-        // Separate each data
-        final String[] separatedLine = line.split(SEPARATOR);
-
-        person_id = Integer.parseInt(separatedLine[0]);
-        person = separatedLine[1] + " " + separatedLine[2];
-        diagnosed_ts = new Timestamp(Long.parseLong(separatedLine[5]));
-        contaminated_by = Integer.parseInt(separatedLine[6]);
-    }
-
-    /*
-     *  Getters
     private short country_id;
 
     /**
      * Constructor from line in CSV.
      *
-     * @param line : CSV line.
+     * @param splitLine : result of the splitting of one line from a file
+     *                  <ul>
+     *                  <li>0 : person ID in string format</li>
+     *                  <li>1 : person name in string format</li>
+     *                  <li>2 : person surname in string format</li>
+     *                  <li>4 : Timestamp when person was diagnosed as sick in string format</li>
+     *                  <li>5 : ID of the person who contaminated this one in string format</li>
+     *                  </ul>
+     * @param country_id_ : ID of the country of the person
+     *                   <ul>
+     *                   <li>0 : France</li>
+     *                   <li>1 : Italy</li>
+     *                   <li>2 : Spain</li>
+     *                   </ul>
      */
-    public DataType(String line) {
-        // Separate each data
-        final String[] separatedLine = line.split(SEPARATOR);
+    public DataType(String[] splitLine, short country_id_) {
 
-        for(int i = 0; i < separatedLine.length; i++) separatedLine[i] = separatedLine[i].replace(" ", "");
-
-        person_id = Integer.parseInt(separatedLine[0]);
+        person_id = Integer.parseInt(splitLine[0]);
         // Remove quotes from names
-        person = separatedLine[1].replace("\"", "") + " " + separatedLine[2].replace("\"", "");
-        diagnosed_ts = new Timestamp((long)Double.parseDouble(separatedLine[4]));
-        contaminated_by = separatedLine[5].equals("unknown") ? -1 : Integer.parseInt(separatedLine[5]);
-
+        person = splitLine[1].replace("\"", "") + " " + splitLine[2].replace("\"", "");
+        diagnosed_ts = new Timestamp((long)Double.parseDouble(splitLine[4]));
+        contaminated_by = splitLine[5].equals("unknown") ? -1 : Integer.parseInt(splitLine[5]);
+        country_id = country_id_;
     }
 
     /* Getters */
@@ -67,12 +55,11 @@ public class DataType {
     /**
      *
      * @return ID of the person
->>>>>>> 2-Processing
      */
     public int getPerson_id() {
         return person_id;
     }
-    
+
     /**
      *
      * @return Name of the person
@@ -89,9 +76,6 @@ public class DataType {
         return diagnosed_ts;
     }
 
-    public int getContaminated_by() {
-        return contaminated_by;
-    }
     /**
      *
      * @return ID of the person who contaminated this one
@@ -99,10 +83,10 @@ public class DataType {
     public int getContaminated_by() {
         return contaminated_by;
     }
-    
+
     /**
-    *
-    * @return ID of the country
-    */
+     *
+     * @return ID of the country
+     */
     public short getCountry_id() { return country_id; }
 }

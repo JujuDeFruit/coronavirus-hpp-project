@@ -32,7 +32,7 @@ public class Processing implements Runnable {
 				outQueue_.add(new Vector<ContaminationChain>(VectorOfContaminationChain_));
 				onePerson = inQueue_.take();
 			}
-			inQueue_.add(new DataType("9, \"Poison\", \"PILL\", 1924-03-17 00:00:00, 1585699579.2617905, 4, \"Une fin est toujours un dÃ©but\""));
+			inQueue_.add(new DataType("9, \"Poison\", \"PILL\", 1924-03-17 00:00:00, 1585699579.2617905, 4, \"Une fin est toujours un début\""));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
