@@ -16,15 +16,15 @@ public class Writer implements Runnable {
 	private PrintWriter pw;
 
 	Writer(BlockingQueue<ContaminationChain []> q){
-		this.iQueue = q;
-		this.pw = null;
+		iQueue = q;
+		pw = null;
 		try {
 			pw = new PrintWriter(new File("src\\main\\resources\\Data.csv"));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		this.builder = new StringBuilder();
-		this.result = "";
+		builder = new StringBuilder();
+		result = "";
 	}
 
 	public void run() {
@@ -32,18 +32,18 @@ public class Writer implements Runnable {
 		//Parse to csv
 		//get top1_country_origin, top1_chain_root_person_id, top1_chain_score; top2_country_origin, top2_chain_root_person_id, top2_chain_score; top3_country_origin, top3_chain_root_person_id, top3_chain_score
 		//Getting the chains, take() 
-		ContaminationChain[] chains= this.iQueue.take();
+		ContaminationChain[] chains= iQueue.take();
 
 		while(chains[0].getCountry_id() != -1)
 		{
-			this.builder.setLength(0);
+			builder.setLength(0);
 			result = "";
 
 			//Parsing each chain
 			for(ContaminationChain chain : chains) {
 				result += chain.getCountry_id() + ',' + chain.getFirstPersonId() + ',' + chain.getScore() + ";";
 			}
-			this.builder.append(result);
+			builder.append(result);
 
 			//Write in file
 			try {
@@ -52,19 +52,19 @@ public class Writer implements Runnable {
 			{
 				e.printStackTrace();
 			}
-			chains= this.iQueue.take();
+			chains= iQueue.take();
 		}	
 		
 	}	
 
 	public void writeResult() throws IOException {
-		this.builder.delete(0, this.builder.length());
-		this.builder.append(result);
+		builder.delete(0, builder.length());
+		builder.append(result);
 		//On efface le fichier
 		pw.print("");
 		pw.flush();
 		//On écrit les résultats
-		pw.println(this.builder.toString());
+		pw.println(builder.toString());
 		pw.flush();
 
 	}
