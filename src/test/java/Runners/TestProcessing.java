@@ -5,6 +5,8 @@ import Models.DataType;
 import Utils.ThreadUtils;
 import org.junit.Test;
 
+import javax.swing.plaf.IconUIResource;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -30,5 +32,18 @@ public class TestProcessing {
 		service.execute(reader);
 		service.execute(processing);
 		ThreadUtils.shutdownAndAwaitTermination(service);
+		// Check data
+		try {
+			ContaminationChain[] currentTop3 = outQueue.take();
+			while (currentTop3[0].getCountry_id() != -1) {
+				List<Integer> top1 = currentTop3[0].getContaminationId();
+				top1.forEach(System.out::println);
+				System.out.println("\n");
+				// refresh data
+				currentTop3 = outQueue.take();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
