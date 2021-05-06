@@ -16,13 +16,11 @@ import java.sql.Timestamp;
  */
 public class DataType {
 
-
     private final int person_id;
     private final String person;
     private final Timestamp diagnosed_ts;
     private final int contaminated_by;
     private final short country_id;
-
 
     /**
      * Constructor from line in CSV.
@@ -53,7 +51,6 @@ public class DataType {
     }
 
     /* Getters */
-
     /**
      *
      * @return ID of the person
@@ -85,7 +82,6 @@ public class DataType {
     public int getContaminated_by() {
         return contaminated_by;
     }
-
 
     /**
      *

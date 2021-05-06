@@ -19,7 +19,7 @@ public class ReaderTest {
      * {@link IOException}, which is unchecked.
      */
     @Test(expected = IOException.class)
-    public void testReadError() throws IOException {
+    public void testOpenFile() throws IOException {
         BlockingQueue<DataType> queue = new LinkedBlockingQueue<DataType>();
         Reader reader = new Reader(queue, "wrongPath");
         reader.openFile();
@@ -27,9 +27,10 @@ public class ReaderTest {
     /**
      * We call {@link Reader#Reader(BlockingQueue, String)}
      * with a correct path to the files, then we close it.
+     * This test open and close at the same time.
      */
     @Test
-    public void testRead() throws IOException {
+    public void testCloseFile() throws IOException {
         BlockingQueue<DataType> queue = new LinkedBlockingQueue<DataType>();
         Reader reader = new Reader(queue, "data\\20");
         reader.openFile();
@@ -40,7 +41,7 @@ public class ReaderTest {
      * in the correct ante-chronological order.
      */
     @Test
-    public void testForwardOrder(){
+    public void testRun() {
         BlockingQueue<DataType> queue = new LinkedBlockingQueue<DataType>();
         Reader reader = new Reader(queue, "data\\20");
         ExecutorService service = Executors.newFixedThreadPool(1);
@@ -49,8 +50,8 @@ public class ReaderTest {
         // Wait for end of thread
         ThreadUtils.shutdownAndAwaitTermination(service);
         // Verify order
-        for (int i=0; i<20; i++){
-            try{
+        for (int i = 0; i < 20; i++) {
+            try {
                 int currentId = queue.take().getPerson_id();
                 assertEquals(i, currentId);
             } catch (InterruptedException e) {
@@ -58,7 +59,7 @@ public class ReaderTest {
             }
         }
         // Verify poison-pill
-        try{
+        try {
             int currentId = queue.take().getPerson_id();
             assertEquals(-1, currentId);
         } catch (InterruptedException e) {
