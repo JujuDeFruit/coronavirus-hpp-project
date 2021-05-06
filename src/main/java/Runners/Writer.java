@@ -33,14 +33,18 @@ public class Writer implements Runnable {
 		if(!(iQueue == null || iQueue.isEmpty())) //Queue non vide
 		{
 			//get top1_country_origin, top1_chain_root_person_id, top1_chain_score; top2_country_origin, top2_chain_root_person_id, top2_chain_score; top3_country_origin, top3_chain_root_person_id, top3_chain_score
-			//Assuming chaine1 is top1 chain
+			//Getting the chains
 			ContaminationChain[] chains= this.iQueue.poll();
+			this.builder.setLength(0);
+			result = "";
 			
-			//Use chain1.country_origin/chain_root_person_id/chain_score
-			result = chains[0].getCountry_id() + ',' + chains[0].getFirstPersonId() + ',' + chains[0].getScore() + ";";
-			result += chains[1].getCountry_id() + ',' + chains[1].getFirstPersonId() + ',' + chains[1].getScore() + ";";
-			result += chains[2].getCountry_id() + ',' + chains[2].getFirstPersonId() + ',' + chains[2].getScore() + ";";
+			//Parsing each chain
+			for(ContaminationChain chain : chains) {
+				result += chain.getCountry_id() + ',' + chain.getFirstPersonId() + ',' + chain.getScore() + ";";
+			}
 			this.builder.append(result);
+			
+			//Write in file
 			try {
 				writeResult();
 			}catch(IOException e)
