@@ -1,34 +1,34 @@
 package Runners;
 
-import static org.junit.Assert.*;
+import Models.ContaminationChain;
+import Models.DataType;
+import Utils.ThreadUtils;
+import org.junit.Test;
 
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.junit.Test;
-
-import Models.ContaminationChain;
-import Models.DataType;
+import static org.junit.Assert.*;
 
 public class TestProcessing {
 
 	@Test
 	public void testRun() {
-		
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testProccesId() {
-		String[] knownContaminator = { "9", "\"Stephanie\"", "\"MITCHELL\"", "1924-03-17 00:00:00", "1585699579.2617905", "4", "\"promenade avec mon fils à la campagne\""};
-        DataType data2 = new DataType(knownContaminator, (short)1);
-        
-        BlockingQueue<DataType> inQueue = new LinkedBlockingQueue<DataType>();
-        BlockingQueue<Vector<ContaminationChain>> outQueue = new LinkedBlockingQueue<>()
-        Processing currentProcess = new Processing(Queue, BlockingQueue<Vector<ContaminationChain>> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
-        	
-        assertEquals(expected, actual);
-		
+		// Shared data
+		BlockingQueue<DataType> inQueue = new LinkedBlockingQueue<DataType>();
+		BlockingQueue<ContaminationChain[]> outQueue = new LinkedBlockingQueue<ContaminationChain[]>();
+		Vector<ContaminationChain> vectorOfContaminationChain = new Vector<ContaminationChain>();
+		// Create Reader
+		Reader reader = new Reader(inQueue, "data\\20");
+		// Create Processing
+		Processing processing = new Processing(inQueue, outQueue, vectorOfContaminationChain);
+		// Launch Threads
+		ExecutorService service = Executors.newFixedThreadPool(2);
+		service.execute(reader);
+		service.execute(processing);
+		ThreadUtils.shutdownAndAwaitTermination(service);
 	}
 }

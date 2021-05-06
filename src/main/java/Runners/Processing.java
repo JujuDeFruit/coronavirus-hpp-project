@@ -64,16 +64,16 @@ public class Processing implements Runnable {
 				List<Integer> listOfIdContamination = myContaminationChain.getContaminationId();
 				ListIterator<Integer> iterator = listOfIdContamination.listIterator(listOfIdContamination.size());
 				int contaminatedBy = myPerson.getContaminated_by();
-				while(iterator.hasPrevious() && ending==false) {
+				while(iterator.hasPrevious() && !ending) {
 					ending=iterator.equals(contaminatedBy);
 					iterator.previous();
 				}
-				if(ending==true) {
+				if(ending) {
 					myContaminationChain.push(myPerson);
 				}	
 			});
 			//if ending=false mean that the person was contaminated by a chain with a score of 0 so she has been destroyed 
-			if(ending==false) {
+			if(!ending) {
 				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));						
 			}
 		}
