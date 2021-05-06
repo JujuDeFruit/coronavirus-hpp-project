@@ -1,10 +1,9 @@
 package Models;
 
-import Utils.TimeStamp;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import Utils.TimeStamp;
 
 /**
  * Contamination chain containing all IDs of contaminated persons from the same root.
@@ -60,11 +59,8 @@ public class ContaminationChain {
         // Browse IDs store in list, to check if person to add to the chain was contaminated by one of the chain.
         for(int id : contaminationId) {
             if (person.getContaminated_by() == id) {
-                // If score is superior to 0, then add the person
-                if (score > 0) {
-                    contaminationId.add(person.getPerson_id());
-                    contaminationTs.add(person.getDiagnosed_ts());
-                }
+                contaminationId.add(person.getPerson_id());
+                contaminationTs.add(person.getDiagnosed_ts());
                 return true;
             }
         }
@@ -92,8 +88,7 @@ public class ContaminationChain {
         return score == 0;
     }
 
-    /***** Getters *****/
-
+    // Getters
     /**
      *
      * @return first person ID.

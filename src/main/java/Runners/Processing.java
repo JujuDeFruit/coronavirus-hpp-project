@@ -8,8 +8,6 @@ import java.util.ListIterator;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 
-import javax.print.attribute.Size2DSyntax;
-
 import Models.ContaminationChain;
 import Models.DataType;
 
