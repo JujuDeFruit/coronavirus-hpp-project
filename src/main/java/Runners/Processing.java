@@ -23,16 +23,10 @@ public class Processing implements Runnable {
 	private boolean ending=false; 
 	private Timestamp currentTimestamp;
 	private final String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
-	
-<<<<<<< HEAD
-	Processing(BlockingQueue<DataType> inQueue, BlockingQueue<Vector<ContaminationChain>> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
-		inQueue_ = inQueue;
-		outQueue_ = outQueue;
-=======
+
 	Processing(BlockingQueue<DataType> inQueue, BlockingQueue<ContaminationChain[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
 		inQueue_=inQueue;
 		outQueue_=outQueue;
->>>>>>> ee49a29 (v2 processing)
 		VectorOfContaminationChain_=VectorOfContaminationChain;
 	}
 	
@@ -71,16 +65,16 @@ public class Processing implements Runnable {
 				List<Integer> listOfIdContamination = myContaminationChain.getContaminationId();
 				ListIterator<Integer> iterator = listOfIdContamination.listIterator(listOfIdContamination.size());
 				int contaminatedBy = myPerson.getContaminated_by();
-				while(iterator.hasPrevious() && ending==false) {
+				while(iterator.hasPrevious() && !ending) {
 					ending=iterator.equals(contaminatedBy);
 					iterator.previous();
 				}
-				if(ending==true) {
+				if(ending) {
 					myContaminationChain.push(myPerson);
 				}	
 			});
 			//if ending=false mean that the person was contaminated by a chain with a score of 0 so she has been destroyed 
-			if(ending==false) {
+			if(!ending) {
 				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));						
 			}
 		}
