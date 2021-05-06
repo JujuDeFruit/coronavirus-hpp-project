@@ -40,6 +40,13 @@ public class ContaminationChain {
         contaminationTs.add(firstPerson.getDiagnosed_ts());
     }
 
+    public ContaminationChain() {
+        country_id = -1;
+        contaminationId = null;
+        contaminationTs = null;
+        score = 0;
+    }
+
     /**
      * Push a person into the contamination chain.
      * @param person person to add to the chain.

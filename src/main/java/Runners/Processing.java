@@ -20,7 +20,7 @@ public class Processing implements Runnable {
 	private final BlockingQueue<ContaminationChain[]> outQueue_;
 	private Vector<ContaminationChain> VectorOfContaminationChain_=null;	
 	
-	private boolean ending=false; 
+	private boolean ending=false;
 	private Timestamp currentTimestamp;
 	private final String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
 
@@ -37,13 +37,12 @@ public class Processing implements Runnable {
 			DataType onePerson = inQueue_.take();
 			while(onePerson.getPerson_id()!=-1) {
 				processId(onePerson);
-				int size = VectorOfContaminationChain_.size();
-				ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
-				outQueue_.add(top3);
 				onePerson = inQueue_.take();
 			}
 			// poison-pill
             inQueue_.add(new DataType(poisonPill, (short) -1));
+			ContaminationChain[] poisonChain = { new ContaminationChain() };
+			outQueue_.add(poisonChain);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,9 +55,9 @@ public class Processing implements Runnable {
 			if(myContaminationChain.calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(myContaminationChain);
 		});
 		
-		if(myPerson.getContaminated_by()==-1) {
-			VectorOfContaminationChain_.add(new ContaminationChain(myPerson));			
-		}else {
+		if(myPerson.getContaminated_by() == -1) {
+			VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
+		} else {
 			// etc ...
 			ending=false;
 			VectorOfContaminationChain_.forEach((myContaminationChain)->{
@@ -78,10 +77,12 @@ public class Processing implements Runnable {
 				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));						
 			}
 		}
-		processSort();	
+		processSort();
 		int size = VectorOfContaminationChain_.size();
-		ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size-1), VectorOfContaminationChain_.get(size-2), VectorOfContaminationChain_.get(size-3)};
-		outQueue_.add(top3);
+		if (size >= 3) {
+			ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
+			outQueue_.add(top3);
+		}
 	}
 	
 	private void processSort() {
