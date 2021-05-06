@@ -11,14 +11,15 @@ import Models.ContaminationChain;
 import Models.DataType;
 
 public class Processing implements Runnable {
+
 	private final BlockingQueue<DataType> inQueue_;
 	private final BlockingQueue<Vector<ContaminationChain>> outQueue_;
 	private Vector<ContaminationChain> VectorOfContaminationChain_=null;	
 	private boolean ending=false; 
 	
 	Processing(BlockingQueue<DataType> inQueue, BlockingQueue<Vector<ContaminationChain>> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
-		inQueue_=inQueue;
-		outQueue_=outQueue;
+		inQueue_ = inQueue;
+		outQueue_ = outQueue;
 		VectorOfContaminationChain_=VectorOfContaminationChain;
 	}
 	
@@ -32,7 +33,6 @@ public class Processing implements Runnable {
 				outQueue_.add(new Vector<ContaminationChain>(VectorOfContaminationChain_));
 				onePerson = inQueue_.take();
 			}
-			inQueue_.add(new DataType("9, \"Poison\", \"PILL\", 1924-03-17 00:00:00, 1585699579.2617905, 4, \"Une fin est toujours un début\""));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
