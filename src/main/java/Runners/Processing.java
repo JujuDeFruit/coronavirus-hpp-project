@@ -43,10 +43,12 @@ public class Processing implements Runnable {
 			DataType onePerson = inQueue_.take();
 			while(onePerson.getPerson_id()!=-1) {
 				processId(onePerson);
-				outQueue_.add(new Vector<ContaminationChain>(VectorOfContaminationChain_));
+				int size = VectorOfContaminationChain_.size();
+				ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
+				outQueue_.add(top3);
 				onePerson = inQueue_.take();
 			}
-			// poison-pill            
+			// poison-pill
             inQueue_.add(new DataType(poisonPill, (short) -1));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
