@@ -28,9 +28,8 @@ public class Processing implements Runnable {
 
 	private final BlockingQueue<DataType> inQueue_;
 	private final BlockingQueue<ContaminationChain[]> outQueue_;
-	private Vector<ContaminationChain> VectorOfContaminationChain_=null;	
-	
-	private boolean ending=false;
+	private Vector<ContaminationChain> VectorOfContaminationChain_=null;
+
 	private Timestamp currentTimestamp;
 	private final String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
 
@@ -50,7 +49,7 @@ public class Processing implements Runnable {
 			DataType onePerson = inQueue_.take();
 			//while we don't reach the poison pill "-1" do:
 			while(onePerson.getPerson_id()!=-1) {
-				processId(onePerson);				
+				processId(onePerson);
 				//we take another person
 				onePerson = inQueue_.take();
 			}
@@ -70,34 +69,37 @@ public class Processing implements Runnable {
 	 */
 	private void processId(DataType myPerson){
 		currentTimestamp = myPerson.getDiagnosed_ts();
-		VectorOfContaminationChain_.forEach((myContaminationChain)->{
-			if(myContaminationChain.calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(myContaminationChain);
-		});
-		
+		for (int i = 0; i < VectorOfContaminationChain_.size(); i++) {
+			if(VectorOfContaminationChain_.get(i).calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(VectorOfContaminationChain_.get(i));
+		}
+//		VectorOfContaminationChain_.forEach((myContaminationChain)->{
+//			if(myContaminationChain.calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(myContaminationChain);
+//		});
+
 		if(myPerson.getContaminated_by() == -1) {
 			VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
 		} else {
 			// etc ...
-			ending=false;
+			boolean ending = false;
 			int i=0;
 			while(i<VectorOfContaminationChain_.size() && !ending) {
-				ending=VectorOfContaminationChain_.get(i).push(myPerson);
+				ending =VectorOfContaminationChain_.get(i).push(myPerson);
 				i++;
-			}			
-			//if ending=false mean that the person was contaminated by a chain with a score of 0 so she has been destroyed 
-			if(ending==false) {
-				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));						
+			}
+			//if ending=false mean that the person was contaminated by a chain with a score of 0 so she has been destroyed
+			if(!ending) {
+				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
 			}
 		}
 		//processSort();
-		Collections.sort(VectorOfContaminationChain_, Comparator.comparing(ContaminationChain::getScore));
+		VectorOfContaminationChain_.sort(Comparator.comparing(ContaminationChain::getScore));
 		int size = VectorOfContaminationChain_.size();
 		if (size >= 3) {
 			ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
 			outQueue_.add(top3);
 		}
 	}
-	
+
 	/**
 	 * Process who sort the Vector of contaminationChain by their score
 	 */
