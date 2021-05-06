@@ -37,9 +37,9 @@ public class Writer implements Runnable {
 			ContaminationChain[] chains= this.iQueue.poll();
 			
 			//Use chain1.country_origin/chain_root_person_id/chain_score
-			result = "chains[0].getCountry_id()" + ',' + "chain1[0].getRoot_id()" + ',' + chains[0].getScore() + "\r\n";
-			result = "chains[1].getCountry_id()" + ',' + "chain1[1].getRoot_id()" + ',' + chains[1].getScore() + "\r\n";
-			result = "chains[2].getCountry_id()" + ',' + "chain1[2].getRoot_id()" + ',' + chains[2].getScore() + "\r\n";
+			result = chains[0].getCountry_id() + ',' + chains[0].getFirstPersonId() + ',' + chains[0].getScore() + ";";
+			result += chains[1].getCountry_id() + ',' + chains[1].getFirstPersonId() + ',' + chains[1].getScore() + ";";
+			result += chains[2].getCountry_id() + ',' + chains[2].getFirstPersonId() + ',' + chains[2].getScore() + ";";
 			this.builder.append(result);
 			try {
 				writeResult();

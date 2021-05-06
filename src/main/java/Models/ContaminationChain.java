@@ -74,4 +74,6 @@ public class ContaminationChain {
     * @return 
     */
     public List<Integer> getContaminationId() {return contaminationId; }
+    
+    
 }
