@@ -42,15 +42,22 @@ public class ContaminationChain {
 
     /**
      * Push a person into the contamination chain.
-     * @param person person to add to the chain
+     * @param person person to add to the chain.
+     * @return true if person was contaminated by a person of the chain.
      */
-    public void push (DataType person) {
-
-        // If score is superior to 0, then add the person
-        if (score > 0) {
-            contaminationId.add(person.getPerson_id());
-            contaminationTs.add(person.getDiagnosed_ts());
+    public boolean push (DataType person) {
+        // Browse IDs store in list, to check if person to add to the chain was contaminated by one of the chain.
+        for(int id : contaminationId) {
+            if (person.getContaminated_by() == id) {
+                // If score is superior to 0, then add the person
+                if (score > 0) {
+                    contaminationId.add(person.getPerson_id());
+                    contaminationTs.add(person.getDiagnosed_ts());
+                }
+                return true;
+            }
         }
+        return false;
     }
 
     /**
@@ -65,7 +72,6 @@ public class ContaminationChain {
             // Compare date of the contaminated person with the first one of the chain.
             final double compare = TimeStamp.getHoursDifference(ts, time);
 
-            
             if (compare <= 168.0) {
                 score += 10;
             } else if (compare <= 336.0) {
@@ -76,6 +82,12 @@ public class ContaminationChain {
     }
 
     /***** Getters *****/
+
+    /**
+     *
+     * @return first person ID.
+     */
+    public Integer getFirstPersonId() { return contaminationId.get(0); }
 
     /**
      *
