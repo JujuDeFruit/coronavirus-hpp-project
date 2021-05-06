@@ -51,7 +51,6 @@ public class DataType {
     }
 
     /* Getters */
-
     /**
      *
      * @return ID of the person

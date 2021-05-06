@@ -40,6 +40,10 @@ public class ContaminationChain {
         contaminationTs.add(firstPerson.getDiagnosed_ts());
     }
 
+    /**
+     * Construct a ContaminationChain having the roll of a poison pill to stop the
+     * process of the Writer.
+     */
     public ContaminationChain() {
         country_id = -1;
         contaminationId = null;
