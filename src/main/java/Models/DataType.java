@@ -45,7 +45,7 @@ public class DataType {
         person_id = Integer.parseInt(splitLine[0]);
         // Remove quotes from names
         person = splitLine[1].replace("\"", "") + " " + splitLine[2].replace("\"", "");
-        diagnosed_ts = new Timestamp((long)Double.parseDouble(splitLine[4]));
+        diagnosed_ts = new Timestamp((long)(Double.parseDouble(splitLine[4])*1000.0));
         contaminated_by = splitLine[5].equals("unknown") ? -1 : Integer.parseInt(splitLine[5]);
         country_id = country_id_;
     }

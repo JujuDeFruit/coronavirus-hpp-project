@@ -75,13 +75,14 @@ public class ContaminationChain {
     public boolean calculateScore(Timestamp time) {
         score = 0;
         // Browse contamination time
+        double compare;
         for (Timestamp ts : contaminationTs) {
             // Compare date of the contaminated person with the first one of the chain.
-            final double compare = TimeStamp.getHoursDifference(ts, time);
+            compare = TimeStamp.getHoursDifference(time, ts);
 
             if (compare <= 168.0) {
                 score += 10;
-            } else if (compare <= 336.0) {
+            } else if (compare < 336.0) {
                 score += 4;
             }
         }
