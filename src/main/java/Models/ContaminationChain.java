@@ -1,10 +1,9 @@
 package Models;
 
-import Utils.TimeStamp;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import Utils.TimeStamp;
 
 /**
  * Contamination chain containing all IDs of contaminated persons from the same root.
@@ -41,6 +40,17 @@ public class ContaminationChain {
     }
 
     /**
+     * Construct a ContaminationChain having the roll of a poison pill to stop the
+     * process of the Writer.
+     */
+    public ContaminationChain() {
+        country_id = -1;
+        contaminationId = null;
+        contaminationTs = null;
+        score = 0;
+    }
+
+    /**
      * Push a person into the contamination chain.
      * @param person person to add to the chain.
      * @return true if person was contaminated by a person of the chain.
@@ -49,11 +59,8 @@ public class ContaminationChain {
         // Browse IDs store in list, to check if person to add to the chain was contaminated by one of the chain.
         for(int id : contaminationId) {
             if (person.getContaminated_by() == id) {
-                // If score is superior to 0, then add the person
-                if (score > 0) {
-                    contaminationId.add(person.getPerson_id());
-                    contaminationTs.add(person.getDiagnosed_ts());
-                }
+                contaminationId.add(person.getPerson_id());
+                contaminationTs.add(person.getDiagnosed_ts());
                 return true;
             }
         }
@@ -68,21 +75,21 @@ public class ContaminationChain {
     public boolean calculateScore(Timestamp time) {
         score = 0;
         // Browse contamination time
+        double compare;
         for (Timestamp ts : contaminationTs) {
             // Compare date of the contaminated person with the first one of the chain.
-            final double compare = TimeStamp.getHoursDifference(ts, time);
+            compare = TimeStamp.getHoursDifference(time, ts);
 
             if (compare <= 168.0) {
                 score += 10;
-            } else if (compare <= 336.0) {
+            } else if (compare < 336.0) {
                 score += 4;
             }
         }
         return score == 0;
     }
 
-    /***** Getters *****/
-
+    // Getters
     /**
      *
      * @return first person ID.
