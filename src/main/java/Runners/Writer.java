@@ -9,10 +9,10 @@ import java.util.concurrent.BlockingQueue;
 
 public class Writer implements Runnable {
 
-	private BlockingQueue<ContaminationChain []> iQueue;
-	private String result;
+	private final BlockingQueue<ContaminationChain []> iQueue;
+	private final StringBuilder builder;
 
-	private StringBuilder builder;
+	private String result;
 	private PrintWriter pw;
 
 	Writer(BlockingQueue<ContaminationChain []> q){
@@ -32,32 +32,31 @@ public class Writer implements Runnable {
 		//Parse to csv
 		//get top1_country_origin, top1_chain_root_person_id, top1_chain_score; top2_country_origin, top2_chain_root_person_id, top2_chain_score; top3_country_origin, top3_chain_root_person_id, top3_chain_score
 		//Getting the chains, take() 
-		ContaminationChain[] chains= iQueue.take();
-
-		while(chains[0].getCountry_id() != -1)
-		{
-			builder.setLength(0);
-			result = "";
-
-			//Parsing each chain
-			for(ContaminationChain chain : chains) {
-				result += chain.getCountry_id() + ',' + chain.getFirstPersonId() + ',' + chain.getScore() + ";";
-			}
-			builder.append(result);
-
-			//Write in file
-			try {
-				writeResult();
-			}catch(IOException e)
+		ContaminationChain[] chains= new ContaminationChain[0];
+		try {
+			chains = iQueue.take();
+			while(chains[0].getCountry_id() != -1)
 			{
-				e.printStackTrace();
+				builder.setLength(0);
+				result = "";
+
+				//Parsing each chain
+				for(ContaminationChain chain : chains) {
+					result += chain.getCountry_id() + ',' + chain.getFirstPersonId() + ',' + chain.getScore() + ";";
+				}
+				builder.append(result);
+
+				//Write in file
+				writeResult();
+				chains= iQueue.take();
 			}
-			chains= iQueue.take();
-		}	
-		
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	}	
 
-	public void writeResult() throws IOException {
+	public void writeResult() {
 		builder.delete(0, builder.length());
 		builder.append(result);
 		//On efface le fichier
