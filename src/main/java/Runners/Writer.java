@@ -15,7 +15,7 @@ public class Writer implements Runnable {
 	private String result;
 	private PrintWriter pw;
 
-	Writer(BlockingQueue<ContaminationChain []> q){
+	public Writer(BlockingQueue<ContaminationChain []> q){
 		iQueue = q;
 		pw = null;
 		try {

@@ -1,3 +1,4 @@
+import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,15 +17,20 @@ public class Main {
 	public static void process(String path) {
 		//Instantiate every components
 		BlockingQueue<DataType> inQueue = new LinkedBlockingQueue<>();
-		BlockingQueue<DataType> outQueue = new LinkedBlockingQueue<>();
+		BlockingQueue<ContaminationChain[]> outQueue = new LinkedBlockingQueue<ContaminationChain[]>();
+		Vector<ContaminationChain> vectorOfContaminationChain = new Vector<ContaminationChain>();
+
 		Reader reader = new Reader(inQueue, path);
-//		Writer writer = new Writer(outQueue);
+		Processing processing = new Processing(inQueue, outQueue, vectorOfContaminationChain);
+		Writer writer = new Writer(outQueue);
+
 		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
 
 		//Start timer
 		long startTime = System.nanoTime();
 		service.execute(reader);
-		//service.execute(writer);
+		service.execute(processing);
+		service.execute(writer);
 		
 		//Wait for the threads to end
 		ThreadUtils.shutdownAndAwaitTermination(service);

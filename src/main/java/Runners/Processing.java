@@ -33,7 +33,7 @@ public class Processing implements Runnable {
 	private Timestamp currentTimestamp;
 	private final String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
 
-	Processing(BlockingQueue<DataType> inQueue, BlockingQueue<ContaminationChain[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
+	public Processing(BlockingQueue<DataType> inQueue, BlockingQueue<ContaminationChain[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
 		inQueue_=inQueue;
 		outQueue_=outQueue;
 		VectorOfContaminationChain_=VectorOfContaminationChain;
