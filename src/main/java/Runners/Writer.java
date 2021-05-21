@@ -31,7 +31,7 @@ public class Writer implements Runnable {
 		//Read from input Queue
 		//Parse to csv
 		//get top1_country_origin, top1_chain_root_person_id, top1_chain_score; top2_country_origin, top2_chain_root_person_id, top2_chain_score; top3_country_origin, top3_chain_root_person_id, top3_chain_score
-		//Getting the chains, take() 
+		//Getting the chains, take()
 		ContaminationChain[] chains= new ContaminationChain[0];
 		try {
 			chains = iQueue.take();
