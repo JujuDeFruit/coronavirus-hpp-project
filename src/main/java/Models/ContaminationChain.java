@@ -61,6 +61,7 @@ public class ContaminationChain {
             if (person.getContaminated_by() == id) {
                 contaminationId.add(person.getPerson_id());
                 contaminationTs.add(person.getDiagnosed_ts());
+                score += 10;
                 return true;
             }
         }

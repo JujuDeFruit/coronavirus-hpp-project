@@ -24,18 +24,21 @@ public class Main {
 		Processing processing = new Processing(inQueue, outQueue, vectorOfContaminationChain);
 		Writer writer = new Writer(outQueue);
 
-		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
+		reader.run();
+		processing.run();
+		writer.run();
+
+/*		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
 
 		//Start timer
 		long startTime = System.nanoTime();
 		service.execute(reader);
 		service.execute(processing);
-		service.execute(writer);
-		
+
 		//Wait for the threads to end
 		ThreadUtils.shutdownAndAwaitTermination(service);
 
 		//Print execution time
-		System.out.println(System.nanoTime()-startTime);
+		System.out.println(System.nanoTime()-startTime);*/
 	}
 }

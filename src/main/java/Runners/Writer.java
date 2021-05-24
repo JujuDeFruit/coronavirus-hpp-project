@@ -31,24 +31,29 @@ public class Writer implements Runnable {
 		//Read from input Queue
 		//Parse to csv
 		//get top1_country_origin, top1_chain_root_person_id, top1_chain_score; top2_country_origin, top2_chain_root_person_id, top2_chain_score; top3_country_origin, top3_chain_root_person_id, top3_chain_score
-		//Getting the chains, take()
-		ContaminationChain[] chains= new ContaminationChain[0];
+		//Getting the top3, take()
+		ContaminationChain[] top3;
 		try {
-			chains = iQueue.take();
-			while(chains[0].getCountry_id() != -1)
+			top3 = iQueue.take();
+			while(top3[0].getCountry_id() != -1)
 			{
 				builder.setLength(0);
-				result = "";
+
+				System.out.println("in writer");
+				System.out.println(top3[0].getScore());
+				System.out.println(top3[1].getScore());
+				System.out.println(top3[2].getScore());
+				System.out.println("\n");
 
 				//Parsing each chain
-				for(ContaminationChain chain : chains) {
-					result += chain.getCountry_id() + ',' + chain.getFirstPersonId() + ',' + chain.getScore() + ";";
-				}
+				result = top3[0].getCountry_id() + "," + top3[0].getFirstPersonId() + "," + top3[0].getScore() + ";";
+				result += top3[1].getCountry_id() + "," + top3[1].getFirstPersonId() + "," + top3[1].getScore() + ";";
+				result += top3[2].getCountry_id() + "," + top3[2].getFirstPersonId() + "," + top3[2].getScore() + ";";
 				builder.append(result);
 
 				//Write in file
 				writeResult();
-				chains= iQueue.take();
+				top3= iQueue.take();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

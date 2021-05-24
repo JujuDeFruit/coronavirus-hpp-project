@@ -67,44 +67,44 @@ public class Processing implements Runnable {
 	 * Process who ..
 	 * @param myPerson : the person taken in charge in the inQueue_
 	 */
-	private void processId(DataType myPerson){
+	private void processId(DataType myPerson) throws InterruptedException {
 		currentTimestamp = myPerson.getDiagnosed_ts();
+		// Recalculate all scores and remove the ContaminationChain if its score is 0
 		for (int i = 0; i < VectorOfContaminationChain_.size(); i++) {
-			if(VectorOfContaminationChain_.get(i).calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(VectorOfContaminationChain_.get(i));
+			if(VectorOfContaminationChain_.get(i).calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(i);
 		}
-//		VectorOfContaminationChain_.forEach((myContaminationChain)->{
-//			if(myContaminationChain.calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(myContaminationChain);
-//		});
-
+		// Create new ContaminationChain when the contaminated id is equal to -1 meaning contaminated by "unknown"
 		if(myPerson.getContaminated_by() == -1) {
 			VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
 		} else {
-			// etc ...
+			// Else we search the chain that contains the contaminated id
 			boolean ending = false;
 			int i=0;
 			while(i<VectorOfContaminationChain_.size() && !ending) {
-				ending =VectorOfContaminationChain_.get(i).push(myPerson);
+				ending = VectorOfContaminationChain_.get(i).push(myPerson);
 				i++;
 			}
-			//if ending=false mean that the person was contaminated by a chain with a score of 0 so she has been destroyed
+			//if ending is still false that means the person was contaminated by a chain with a score of 0 so it has been destroyed
 			if(!ending) {
 				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
 			}
 		}
 		//processSort();
 		VectorOfContaminationChain_.sort(Comparator.comparing(ContaminationChain::getScore));
+/*		VectorOfContaminationChain_.forEach((cc) -> {
+			System.out.println(cc.getScore());
+		});
+		System.out.println("\n");*/
 		int size = VectorOfContaminationChain_.size();
 		if (size >= 3) {
 			ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
+			System.out.println("in processing");
+			System.out.println(top3[0].getScore());
+			System.out.println(top3[1].getScore());
+			System.out.println(top3[2].getScore());
+			System.out.println("\n");
 			outQueue_.add(top3);
 		}
-	}
-
-	/**
-	 * Process who sort the Vector of contaminationChain by their score
-	 */
-	private void processSort() {
-		Collections.sort(VectorOfContaminationChain_, Comparator.comparing(ContaminationChain::getScore));
 	}
 }
 
