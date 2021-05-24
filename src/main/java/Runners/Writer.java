@@ -9,13 +9,13 @@ import java.util.concurrent.BlockingQueue;
 
 public class Writer implements Runnable {
 
-	private final BlockingQueue<ContaminationChain []> iQueue;
+	private final BlockingQueue<int []> iQueue;
 	private final StringBuilder builder;
 
 	private String result;
 	private PrintWriter pw;
 
-	public Writer(BlockingQueue<ContaminationChain []> q){
+	public Writer(BlockingQueue<int []> q){
 		iQueue = q;
 		pw = null;
 		try {
@@ -32,23 +32,23 @@ public class Writer implements Runnable {
 		//Parse to csv
 		//get top1_country_origin, top1_chain_root_person_id, top1_chain_score; top2_country_origin, top2_chain_root_person_id, top2_chain_score; top3_country_origin, top3_chain_root_person_id, top3_chain_score
 		//Getting the top3, take()
-		ContaminationChain[] top3;
+		int[] top3;
 		try {
 			top3 = iQueue.take();
-			while(top3[0].getCountry_id() != -1)
+			while(top3[0] != -1)
 			{
 				builder.setLength(0);
 
-				System.out.println("in writer");
-				System.out.println(top3[0].getScore());
-				System.out.println(top3[1].getScore());
-				System.out.println(top3[2].getScore());
-				System.out.println("\n");
+//				System.out.println("in writer");
+//				System.out.println(top3[2]);
+//				System.out.println(top3[5]);
+//				System.out.println(top3[8]);
+//				System.out.println("\n");
 
 				//Parsing each chain
-				result = top3[0].getCountry_id() + "," + top3[0].getFirstPersonId() + "," + top3[0].getScore() + ";";
-				result += top3[1].getCountry_id() + "," + top3[1].getFirstPersonId() + "," + top3[1].getScore() + ";";
-				result += top3[2].getCountry_id() + "," + top3[2].getFirstPersonId() + "," + top3[2].getScore() + ";";
+				result = top3[0] + "," + top3[1] + "," + top3[2] + ";";
+				result += top3[3] + "," + top3[4] + "," + top3[5] + ";";
+				result += top3[6] + "," + top3[7] + "," + top3[8] + ";";
 				builder.append(result);
 
 				//Write in file

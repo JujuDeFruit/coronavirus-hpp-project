@@ -27,13 +27,13 @@ import Models.DataType;
 public class Processing implements Runnable {
 
 	private final BlockingQueue<DataType> inQueue_;
-	private final BlockingQueue<ContaminationChain[]> outQueue_;
+	private final BlockingQueue<int[]> outQueue_;
 	private Vector<ContaminationChain> VectorOfContaminationChain_=null;
 
 	private Timestamp currentTimestamp;
 	private final String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
 
-	public Processing(BlockingQueue<DataType> inQueue, BlockingQueue<ContaminationChain[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
+	public Processing(BlockingQueue<DataType> inQueue, BlockingQueue<int[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
 		inQueue_=inQueue;
 		outQueue_=outQueue;
 		VectorOfContaminationChain_=VectorOfContaminationChain;
@@ -55,7 +55,7 @@ public class Processing implements Runnable {
 			}
 			// poison-pill
             inQueue_.add(new DataType(poisonPill, (short) -1));
-			ContaminationChain[] poisonChain = { new ContaminationChain() };
+			int[] poisonChain = { -1 };
 			outQueue_.add(poisonChain);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -97,12 +97,16 @@ public class Processing implements Runnable {
 		System.out.println("\n");*/
 		int size = VectorOfContaminationChain_.size();
 		if (size >= 3) {
-			ContaminationChain[] top3 = {VectorOfContaminationChain_.get(size - 1), VectorOfContaminationChain_.get(size - 2), VectorOfContaminationChain_.get(size - 3)};
-			System.out.println("in processing");
-			System.out.println(top3[0].getScore());
-			System.out.println(top3[1].getScore());
-			System.out.println(top3[2].getScore());
-			System.out.println("\n");
+			ContaminationChain first = VectorOfContaminationChain_.get(size - 1);
+			ContaminationChain second = VectorOfContaminationChain_.get(size - 2);
+			ContaminationChain third = VectorOfContaminationChain_.get(size - 3);
+			int[] top3 = {first.getCountry_id(), first.getFirstPersonId(), first.getScore(), second.getCountry_id(),
+					second.getFirstPersonId(), second.getScore(), third.getCountry_id(), third.getFirstPersonId(), third.getScore()};
+//			System.out.println("in processing");
+//			System.out.println(top3[2]);
+//			System.out.println(top3[5]);
+//			System.out.println(top3[8]);
+//			System.out.println("\n");
 			outQueue_.add(top3);
 		}
 	}

@@ -11,34 +11,31 @@ import Utils.*;
 public class Main {
 	
 	public static void main(String args[]) {
-		process("data\\20");
+		process("data\\5000");
 	}
 	
 	public static void process(String path) {
 		//Instantiate every components
 		BlockingQueue<DataType> inQueue = new LinkedBlockingQueue<>();
-		BlockingQueue<ContaminationChain[]> outQueue = new LinkedBlockingQueue<ContaminationChain[]>();
+		BlockingQueue<int[]> outQueue = new LinkedBlockingQueue<int[]>();
 		Vector<ContaminationChain> vectorOfContaminationChain = new Vector<ContaminationChain>();
 
 		Reader reader = new Reader(inQueue, path);
 		Processing processing = new Processing(inQueue, outQueue, vectorOfContaminationChain);
 		Writer writer = new Writer(outQueue);
 
-		reader.run();
-		processing.run();
-		writer.run();
-
-/*		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
+		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
 
 		//Start timer
 		long startTime = System.nanoTime();
 		service.execute(reader);
 		service.execute(processing);
+		service.execute(writer);
 
 		//Wait for the threads to end
 		ThreadUtils.shutdownAndAwaitTermination(service);
 
 		//Print execution time
-		System.out.println(System.nanoTime()-startTime);*/
+		System.out.println(System.nanoTime()-startTime);
 	}
 }
