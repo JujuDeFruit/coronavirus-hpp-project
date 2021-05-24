@@ -102,11 +102,6 @@ public class Processing implements Runnable {
 			ContaminationChain third = VectorOfContaminationChain_.get(size - 3);
 			int[] top3 = {first.getCountry_id(), first.getFirstPersonId(), first.getScore(), second.getCountry_id(),
 					second.getFirstPersonId(), second.getScore(), third.getCountry_id(), third.getFirstPersonId(), third.getScore()};
-//			System.out.println("in processing");
-//			System.out.println(top3[2]);
-//			System.out.println(top3[5]);
-//			System.out.println(top3[8]);
-//			System.out.println("\n");
 			outQueue_.add(top3);
 		}
 	}

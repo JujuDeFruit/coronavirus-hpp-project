@@ -1,3 +1,4 @@
+import java.util.Scanner;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -11,7 +12,7 @@ import Utils.*;
 public class Main {
 	
 	public static void main(String args[]) {
-		process("data\\5000");
+		process("data\\1000000");
 	}
 	
 	public static void process(String path) {
@@ -25,6 +26,9 @@ public class Main {
 		Writer writer = new Writer(outQueue);
 
 		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
+
+//		Scanner scanners = new Scanner(System.in);
+//		int i = scanners.nextInt();
 
 		//Start timer
 		long startTime = System.nanoTime();

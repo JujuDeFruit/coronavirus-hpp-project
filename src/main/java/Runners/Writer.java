@@ -39,12 +39,6 @@ public class Writer implements Runnable {
 			{
 				builder.setLength(0);
 
-//				System.out.println("in writer");
-//				System.out.println(top3[2]);
-//				System.out.println(top3[5]);
-//				System.out.println(top3[8]);
-//				System.out.println("\n");
-
 				//Parsing each chain
 				result = top3[0] + "," + top3[1] + "," + top3[2] + ";";
 				result += top3[3] + "," + top3[4] + "," + top3[5] + ";";
