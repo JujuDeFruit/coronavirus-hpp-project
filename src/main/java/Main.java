@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -6,13 +5,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import Models.*;
-import Runners.*;
+import TestsRunners.*;
 import Utils.*;
 
 public class Main {
 	
 	public static void main(String args[]) {
-		process("data\\5000");
+		process("data\\1000000");
 	}
 	
 	public static void process(String path) {

@@ -1,5 +1,5 @@
 import Models.DataType;
-import Runners.Reader;
+import TestsRunners.Reader;
 import Utils.ThreadUtils;
 
 import java.util.concurrent.BlockingQueue;
