@@ -19,7 +19,7 @@ public class Writer implements Runnable {
 		iQueue = q;
 		pw = null;
 		try {
-			pw = new PrintWriter(new File("src\\main\\resources\\data.csv"));
+			pw = new PrintWriter(new File("src\\main\\resources\\testData.csv"));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
