@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -10,7 +9,7 @@ import Runners.*;
 import Utils.*;
 
 public class Main {
-	
+
 	public static void main(String[] args) {
 		process("data\\5000");
 	}

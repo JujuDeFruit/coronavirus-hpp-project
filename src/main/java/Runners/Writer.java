@@ -59,7 +59,7 @@ public class Writer implements Runnable {
 		//On efface le fichier
 		pw.print("");
 		pw.flush();
-		//On écrit les résultats
+		//On ï¿½crit les rï¿½sultats
 		pw.println(builder.toString());
 		pw.flush();
 

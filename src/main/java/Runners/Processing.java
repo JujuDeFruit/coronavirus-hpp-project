@@ -1,10 +1,7 @@
 package Runners;
 
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 
@@ -48,7 +45,7 @@ public class Processing implements Runnable {
 		try {
 			DataType onePerson = inQueue_.take();
 			//while we don't reach the poison pill "-1" do:
-			while(onePerson.getPerson_id()!=-1) {
+			while(onePerson.getPerson_id() != -1) {
 				processId(onePerson);
 				//we take another person
 				onePerson = inQueue_.take();
@@ -69,10 +66,12 @@ public class Processing implements Runnable {
 	 */
 	private void processId(DataType myPerson) throws InterruptedException {
 		currentTimestamp = myPerson.getDiagnosed_ts();
+
 		// Recalculate all scores and remove the ContaminationChain if its score is 0
-		for (int i = 0; i < VectorOfContaminationChain_.size(); i++) {
+		/*for (int i = 0; i < VectorOfContaminationChain_.size(); i++) {
 			if(VectorOfContaminationChain_.get(i).calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(i);
-		}
+		}*/
+
 		// Create new ContaminationChain when the contaminated id is equal to -1 meaning contaminated by "unknown"
 		if(myPerson.getContaminated_by() == -1) {
 			VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
@@ -80,45 +79,36 @@ public class Processing implements Runnable {
 			// Else we search the chain that contains the contaminated id
 			boolean ending = false;
 			int i=0;
-			while(i<VectorOfContaminationChain_.size() && !ending) {
+			while(i < VectorOfContaminationChain_.size() && !ending) {
 				ending = VectorOfContaminationChain_.get(i).push(myPerson);
+				if (ending && VectorOfContaminationChain_.get(i).calculateScore(currentTimestamp)) {
+					VectorOfContaminationChain_.remove(i);
+				}
 				i++;
 			}
-			//if ending is still false that means the person was contaminated by a chain with a score of 0 so it has been destroyed
+
+			// If ending is still false that means the person was contaminated by a chain with a score of 0 so it has been destroyed
 			if(!ending) {
 				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
 			}
 		}
-		//processSort();
+
 		VectorOfContaminationChain_.sort(Comparator.comparing(ContaminationChain::getScore));
-/*		VectorOfContaminationChain_.forEach((cc) -> {
-			System.out.println(cc.getScore());
-		});
-		System.out.println("\n");*/
+
 		int size = VectorOfContaminationChain_.size();
 		if (size >= 3) {
+
 			ContaminationChain first = VectorOfContaminationChain_.get(size - 1);
 			ContaminationChain second = VectorOfContaminationChain_.get(size - 2);
 			ContaminationChain third = VectorOfContaminationChain_.get(size - 3);
-			int[] top3 = {first.getCountry_id(), first.getFirstPersonId(), first.getScore(), second.getCountry_id(),
-					second.getFirstPersonId(), second.getScore(), third.getCountry_id(), third.getFirstPersonId(), third.getScore()};
+
+			int[] top3 = {
+					first.getCountry_id(), first.getFirstPersonId(), first.getScore(),
+					second.getCountry_id(), second.getFirstPersonId(), second.getScore(),
+					third.getCountry_id(), third.getFirstPersonId(), third.getScore()
+			};
+
 			outQueue_.add(top3);
 		}
 	}
 }
-
-
-
-//List<Integer> listOfIdContamination = myContaminationChain.getContaminationId();
-//ListIterator<Integer> iterator = listOfIdContamination.listIterator(listOfIdContamination.size());
-//int contaminatedBy = myPerson.getContaminated_by();
-//while(iterator.hasPrevious() && ending==false) {
-//	ending=iterator.equals(contaminatedBy);
-//	iterator.previous();
-//}
-/*VectorOfContaminationChain_.forEach((myContaminationChain)->{
-				
-				if(ending==true) {
-					myContaminationChain.push(myPerson);
-				}	
-			});*/
