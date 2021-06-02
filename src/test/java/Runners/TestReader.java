@@ -1,18 +1,18 @@
 package Runners;
 
 import static org.junit.Assert.*;
-
-import Models.DataType;
-import Utils.ThreadUtils;
 import org.junit.Test;
-
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ReaderTest {
+import Models.DataType;
+import Utils.ThreadUtils;
+
+
+public class TestReader {
     /**
      * We call {@link Reader#Reader(BlockingQueue, String)}
      * with a wrong path to the files, therefore we expect an
@@ -43,14 +43,14 @@ public class ReaderTest {
     @Test
     public void testRun() {
         BlockingQueue<DataType> queue = new LinkedBlockingQueue<DataType>();
-        Reader reader = new Reader(queue, "data\\20");
+        Reader reader = new Reader(queue, "data\\5000");
         ExecutorService service = Executors.newFixedThreadPool(1);
         // Start reader
         service.execute(reader);
         // Wait for end of thread
         ThreadUtils.shutdownAndAwaitTermination(service);
         // Verify order
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5000; i++) {
             try {
                 int currentId = queue.take().getPerson_id();
                 assertEquals(i, currentId);
