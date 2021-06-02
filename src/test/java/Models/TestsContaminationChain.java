@@ -1,17 +1,14 @@
-package TestsModels;
-
-import org.junit.Test;
-
-import Models.DataType;
-import Models.ContaminationChain;
-
-import java.sql.Timestamp;
+package Models;
 
 import static org.junit.Assert.*;
+import org.junit.Test;
+import java.sql.Timestamp;
+
 
 public class TestsContaminationChain {
     /**
-     * Test constructor of the ContaminationChain Object.
+     * We call {@link ContaminationChain#ContaminationChain(DataType)}  and check if the created object contains
+     * what we expect.
      */
     @Test
     public void testConstructor() {
@@ -29,9 +26,22 @@ public class TestsContaminationChain {
         assertEquals(new Timestamp((long)(1582161158.5235808 * 1000.0)), contaminationChain.getContaminationTs().get(0));
 
     }
-
     /**
-     * Test Push method.
+     * We call {@link ContaminationChain#ContaminationChain()}  and check if the created object is the poison-pill.
+     */
+    @Test
+    public void testConstructorPoisonPill() {
+        ContaminationChain poisonPill = new ContaminationChain();
+
+        assertEquals(-1, poisonPill.getCountry_id());
+        assertNull(poisonPill.getContaminationId());
+        assertNull(poisonPill.getContaminationTs());
+        assertEquals(0, poisonPill.getScore());
+    }
+    /**
+     * We call {@link ContaminationChain#push(DataType)}  and check if:
+     *      - It pushes in the chain when the contaminatedId is inside thid chain.
+     *      - It doesn't push in the other case.
      */
     @Test
     public void testPush() {
@@ -66,9 +76,8 @@ public class TestsContaminationChain {
         assertEquals(9, (int)contaminationChain.getContaminationId().get(2));
         assertEquals(new Timestamp((long)(1585699579.2617905 * 1000.0)), contaminationChain.getContaminationTs().get(2));
     }
-
     /**
-     * Test CalculateScore method.
+     * We call {@link ContaminationChain#calculateScore(Timestamp)}  and check if the score is correct.
      */
     @Test
     public void testCalculateScore() {

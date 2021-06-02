@@ -13,7 +13,7 @@ public class TimeStamp {
      * @param t2 second timestamp
      * @return number of hours
      */
-    public static float getHoursDifference(Timestamp t1, Timestamp t2) {
-        return (float) ((t1.getTime() - t2.getTime()) / 3600000.0);
+    public static double getHoursDifference(Timestamp t1, Timestamp t2) {
+        return ((t1.getTime() - t2.getTime()) / 3_600_000.0);
     }
 }

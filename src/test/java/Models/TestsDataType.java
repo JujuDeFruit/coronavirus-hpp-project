@@ -1,15 +1,14 @@
-package TestsModels;
-
-import Models.DataType;
+package Models;
 
 import org.junit.Test;
-
 import java.sql.Timestamp;
-
 import static org.junit.Assert.assertEquals;
 
-public class TestsDataType {
 
+public class TestsDataType {
+    /**
+     * We call {@link DataType#DataType(String[], short)} and check if the created object contains what we expect
+     */
     @Test
     public void test (){
         String[] unknownContaminator = { "4", "\"Daniel\"", "\"ROBINSON\"", "1995-08-21 00:00:00", "1582161158.5235808", "unknown", "\"course à pieds avec la grand-mère au marché\"" };
