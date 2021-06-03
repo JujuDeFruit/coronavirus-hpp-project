@@ -3,6 +3,7 @@ package Models;
 import org.junit.Test;
 import java.sql.Timestamp;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 public class TestsDataType {
@@ -28,5 +29,18 @@ public class TestsDataType {
         assertEquals(new Timestamp((long)(1585699579.2617905*1000.0)), data2.getDiagnosed_ts());
         assertEquals(4, data2.getContaminated_by());
         assertEquals(1, data2.getCountry_id());
+    }
+    /**
+     * We call {@link DataType#DataType(String[], short)} and check if the created object contains what we expect
+     */
+    @Test
+    public void testPoisonPill (){
+        DataType data = new DataType();
+
+        assertEquals(-1, data.getPerson_id());
+        assertNull(data.getPerson());
+        assertNull(data.getDiagnosed_ts());
+        assertEquals(-1, data.getContaminated_by());
+        assertEquals(-1, data.getCountry_id());
     }
 }

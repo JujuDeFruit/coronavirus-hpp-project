@@ -27,18 +27,6 @@ public class TestsContaminationChain {
 
     }
     /**
-     * We call {@link ContaminationChain#ContaminationChain()}  and check if the created object is the poison-pill.
-     */
-    @Test
-    public void testConstructorPoisonPill() {
-        ContaminationChain poisonPill = new ContaminationChain();
-
-        assertEquals(-1, poisonPill.getCountry_id());
-        assertNull(poisonPill.getContaminationId());
-        assertNull(poisonPill.getContaminationTs());
-        assertEquals(0, poisonPill.getScore());
-    }
-    /**
      * We call {@link ContaminationChain#push(DataType)}  and check if:
      *      - It pushes in the chain when the contaminatedId is inside thid chain.
      *      - It doesn't push in the other case.
