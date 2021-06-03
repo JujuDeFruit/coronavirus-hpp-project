@@ -50,6 +50,17 @@ public class DataType {
         country_id = country_id_;
     }
 
+    /**
+     * Construct a special DataType corresponding to the poison-pill
+     */
+    public DataType(){
+        person_id = -1;
+        person = null;
+        diagnosed_ts = null;
+        contaminated_by = -1 ;
+        country_id = -1;
+    }
+
     /* Getters */
     /**
      *

@@ -40,17 +40,6 @@ public class ContaminationChain {
     }
 
     /**
-     * Construct a ContaminationChain having the roll of a poison pill to stop the
-     * process of the Writer.
-     */
-    public ContaminationChain() {
-        country_id = -1;
-        contaminationId = null;
-        contaminationTs = null;
-        score = 0;
-    }
-
-    /**
      * Push a person into the contamination chain.
      * @param person person to add to the chain.
      * @return true if person was contaminated by a person of the chain.
