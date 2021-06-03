@@ -27,7 +27,7 @@ public class Processing implements Runnable {
 	private final BlockingQueue<int[]> outQueue_;
 	private Vector<ContaminationChain> VectorOfContaminationChain_=null;
 
-	private Timestamp currentTimestamp;
+	private Timestamp currentTimestamp; // Not converted to local variable in order to optimize memory allocation
 
 	public Processing(BlockingQueue<DataType> inQueue, BlockingQueue<int[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
 		inQueue_=inQueue;
@@ -40,7 +40,6 @@ public class Processing implements Runnable {
     */
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		try {
 			DataType onePerson = inQueue_.take();
 			//while we don't reach the poison pill "-1" do:
@@ -53,7 +52,6 @@ public class Processing implements Runnable {
             inQueue_.add(new DataType());
 			outQueue_.add(new int[] { -1 });
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -62,7 +60,7 @@ public class Processing implements Runnable {
 	 * Process who ..
 	 * @param myPerson : the person taken in charge in the inQueue_
 	 */
-	private void processId(DataType myPerson) throws InterruptedException {
+	private void processId(DataType myPerson) {
 		currentTimestamp = myPerson.getDiagnosed_ts();
 
 		// Recalculate all scores and remove the ContaminationChain if its score is 0
@@ -91,22 +89,21 @@ public class Processing implements Runnable {
 			}
 		}
 
+		// Forward the top3 to the outQueue
+			// Sort ContaminationChain according to score
 		VectorOfContaminationChain_.sort(Comparator.comparing(ContaminationChain::getScore));
-
+			// Forward only when their is 3 or more ContaminationChain
 		int size = VectorOfContaminationChain_.size();
 		if (size >= 3) {
-
 			ContaminationChain first = VectorOfContaminationChain_.get(size - 1);
 			ContaminationChain second = VectorOfContaminationChain_.get(size - 2);
 			ContaminationChain third = VectorOfContaminationChain_.get(size - 3);
 
-			int[] top3 = {
+			outQueue_.add(new int[] {
 					first.getCountry_id(), first.getFirstPersonId(), first.getScore(),
 					second.getCountry_id(), second.getFirstPersonId(), second.getScore(),
 					third.getCountry_id(), third.getFirstPersonId(), third.getScore()
-			};
-
-			outQueue_.add(top3);
+			});
 		}
 	}
 }
