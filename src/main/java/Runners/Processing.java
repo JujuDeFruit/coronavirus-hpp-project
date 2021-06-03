@@ -29,6 +29,7 @@ public class Processing implements Runnable {
 
 	private Timestamp currentTimestamp; // Not converted to local variable in order to optimize memory allocation
 
+
 	public Processing(BlockingQueue<DataType> inQueue, BlockingQueue<int[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
 		inQueue_=inQueue;
 		outQueue_=outQueue;
@@ -95,6 +96,7 @@ public class Processing implements Runnable {
 			// Forward only when their is 3 or more ContaminationChain
 		int size = VectorOfContaminationChain_.size();
 		if (size >= 3) {
+
 			ContaminationChain first = VectorOfContaminationChain_.get(size - 1);
 			ContaminationChain second = VectorOfContaminationChain_.get(size - 2);
 			ContaminationChain third = VectorOfContaminationChain_.get(size - 3);
