@@ -28,7 +28,6 @@ public class Processing implements Runnable {
 	private Vector<ContaminationChain> VectorOfContaminationChain_=null;
 
 	private Timestamp currentTimestamp;
-	private final String[] poisonPill = { "-1", "", "", "", "1582161158", "unknown", "" };
 
 	public Processing(BlockingQueue<DataType> inQueue, BlockingQueue<int[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
 		inQueue_=inQueue;
@@ -51,9 +50,8 @@ public class Processing implements Runnable {
 				onePerson = inQueue_.take();
 			}
 			// poison-pill
-            inQueue_.add(new DataType(poisonPill, (short) -1));
-			int[] poisonChain = { -1 };
-			outQueue_.add(poisonChain);
+            inQueue_.add(new DataType());
+			outQueue_.add(new int[] { -1 });
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
