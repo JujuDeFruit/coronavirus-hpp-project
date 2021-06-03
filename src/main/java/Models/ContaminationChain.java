@@ -21,6 +21,7 @@ public class ContaminationChain {
     private int score;
     private final List<Integer> contaminationId;
     private final List<Timestamp> contaminationTs;
+    private int chainSize;
 
     /**
      * Constructor of the contamination chain.
@@ -37,6 +38,9 @@ public class ContaminationChain {
         // Push first contaminated person into lists.
         contaminationId.add(firstPerson.getPerson_id());
         contaminationTs.add(firstPerson.getDiagnosed_ts());
+
+        // Set size to 1
+        chainSize = 1;
     }
 
     /**
@@ -51,6 +55,7 @@ public class ContaminationChain {
                 contaminationId.add(person.getPerson_id());
                 contaminationTs.add(person.getDiagnosed_ts());
                 score += 10;
+                chainSize += 1;
                 return true;
             }
         }
