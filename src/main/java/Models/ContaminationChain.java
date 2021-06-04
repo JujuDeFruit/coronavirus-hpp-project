@@ -55,7 +55,7 @@ public class ContaminationChain {
      */
     public short push (DataType person) {
         // dichotomous search of the id
-        int searched = person.getPerson_id();
+        int searched = person.getContaminated_by();
         boolean found = false;
         int end = chainSize - 1, begin = 0, mid;
         while (!found && end >= begin) {
