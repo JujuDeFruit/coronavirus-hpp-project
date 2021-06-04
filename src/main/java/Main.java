@@ -27,9 +27,6 @@ public class Main {
 
 		ExecutorService service = Executors.newFixedThreadPool(5); //5 threads is the limit
 
-//		Scanner scanners = new Scanner(System.in);
-//		int i = scanners.nextInt();
-
 		//Start timer
 		long startTime = System.nanoTime();
 		service.execute(reader);

@@ -1,5 +1,6 @@
 package Models;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class ContaminationChain {
     private int score;
     private final List<Integer> contaminationId;
     private final List<Timestamp> contaminationTs;
+    private Integer idToCalculateScore;
 
     /**
      * Constructor of the contamination chain.
@@ -33,6 +35,8 @@ public class ContaminationChain {
         // Set initial score to 10
         score = 10;
         country_id = firstPerson.getCountry_id();
+
+        idToCalculateScore = 0;
 
         // Push first contaminated person into lists.
         contaminationId.add(firstPerson.getPerson_id());
@@ -62,10 +66,22 @@ public class ContaminationChain {
                 contaminationId.add(person.getPerson_id());
                 contaminationTs.add(person.getDiagnosed_ts());
                 score += 10;
+                majID(person.getDiagnosed_ts());
                 return true;
             }
         }
         return false;
+    }
+
+
+    public void majID(Timestamp ts) {
+        for (int i = contaminationTs.size() - 1; i <= 0; i--) {
+            if (TimeStamp.getHoursDifference(contaminationTs.get(i), ts) >= 336.0) {
+                idToCalculateScore = i++;
+                return;
+            }
+            idToCalculateScore = -1;
+        }
     }
 
     /**
@@ -74,12 +90,14 @@ public class ContaminationChain {
      * @return boolean to inform if score is 0 or not.
      */
     public boolean calculateScore(Timestamp time) {
+        if (idToCalculateScore == -1) return true;
+
         score = 0;
         // Browse contamination time
         double compare;
-        for (Timestamp ts : contaminationTs) {
+        for (int i = idToCalculateScore; i < contaminationTs.size(); i++) {
             // Compare date of the contaminated person with the first one of the chain.
-            compare = TimeStamp.getHoursDifference(time, ts);
+            compare = TimeStamp.getHoursDifference(time, contaminationTs.get(i));
 
             if (compare <= 168.0) {
                 score += 10;
