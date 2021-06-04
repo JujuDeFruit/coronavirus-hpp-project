@@ -46,20 +46,26 @@ public class ContaminationChain {
     /**
      * Push a person into the contamination chain.
      * @param person person to add to the chain.
-     * @return true if person was contaminated by a person of the chain.
+     * @return  0: the person was inserted in the chain
+     *          1: the contaminated id was found but the chain's score is now 0
+     *          2: the contaminated id wasn't found in the chain
      */
-    public boolean push (DataType person) {
-        // Browse IDs store in list, to check if person to add to the chain was contaminated by one of the chain.
+    public short push (DataType person) {
+        // Browse IDs store in list, to check if person to add to the chain was contaminated by one of the member of this chain.
         for(int id : contaminationId) {
             if (person.getContaminated_by() == id) {
-                contaminationId.add(person.getPerson_id());
-                contaminationTs.add(person.getDiagnosed_ts());
-                score += 10;
-                chainSize += 1;
-                return true;
+                if (calculateScore(person.getDiagnosed_ts())) {
+                    return 1;
+                } else {
+                    contaminationId.add(person.getPerson_id());
+                    contaminationTs.add(person.getDiagnosed_ts());
+                    score += 10;
+                    chainSize += 1;
+                    return 0;
+                }
             }
         }
-        return false;
+        return 2;
     }
 
     /**
@@ -85,6 +91,12 @@ public class ContaminationChain {
     }
 
     // Getters
+    /**
+     *
+     * @return the number of person "in" the chain.
+     */
+    public int getChainSize() { return chainSize; }
+
     /**
      *
      * @return first person ID.

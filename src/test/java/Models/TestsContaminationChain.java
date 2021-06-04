@@ -44,8 +44,8 @@ public class TestsContaminationChain {
         // Push all
         ContaminationChain contaminationChain = new ContaminationChain(first);
 
-        assertTrue(contaminationChain.push(second));
-        assertFalse(contaminationChain.push(third));
+        assertEquals(0, contaminationChain.push(second));
+        assertEquals(2, contaminationChain.push(third));
 
         // Third should not be push on the ground, third was not contaminated by one person of this chain.
         assertEquals(2, contaminationChain.getContaminationTs().size());
@@ -56,7 +56,7 @@ public class TestsContaminationChain {
 
         thirdStr[5] = "5";
         third = new DataType( thirdStr, (short)0);
-        assertTrue(contaminationChain.push(third));
+        assertEquals(0, contaminationChain.push(third));
 
         assertEquals(3, contaminationChain.getContaminationTs().size());
         assertEquals(3, contaminationChain.getContaminationId().size());

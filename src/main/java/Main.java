@@ -11,7 +11,7 @@ import Utils.*;
 public class Main {
 	
 	public static void main(String args[]) {
-		process("data\\1000000");
+		process("data\\5000");
 	}
 	
 	public static void process(String path) {
