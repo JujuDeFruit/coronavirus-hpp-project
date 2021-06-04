@@ -54,32 +54,48 @@ public class ContaminationChain {
      *          2: the contaminated id wasn't found in the chain
      */
     public short push (DataType person) {
-        // Browse IDs store in list, to check if person to add to the chain was contaminated by one of the member of this chain.
-        for(int id : contaminationId) {
-            if (person.getContaminated_by() == id) {
-                if (calculateScore(person.getDiagnosed_ts())) {
-                    return 1;
+        // dichotomous search of the id
+        int searched = person.getPerson_id();
+        boolean found = false;
+        int end = chainSize - 1, begin = 0, mid;
+        while (!found && end >= begin) {
+            mid = (end + begin)/2;
+            if (contaminationId.get(mid) == searched) {
+                found = true;
+            } else {
+                if (searched > contaminationId.get(mid)) {
+                    begin = mid + 1;
                 } else {
-                    contaminationId.add(person.getPerson_id());
-                    contaminationTs.add(person.getDiagnosed_ts());
-                    score += 10;
-                    chainSize += 1;
-                    majID(person.getDiagnosed_ts());
-                    return 0;
+                    end = mid - 1;
                 }
+            }
+        }
+        if (found) {
+            // look what is the the first id that corresponds to a person that gives a score > 0 to this chain.
+            majID(person.getDiagnosed_ts());
+            if (idToCalculateScore == chainSize) {
+                // then the score of the chain is 0
+                return 1;
+            } else {
+                // We add the person to this alive chain
+                contaminationId.add(person.getPerson_id());
+                contaminationTs.add(person.getDiagnosed_ts());
+                chainSize += 1;
+                return 0;
             }
         }
         return 2;
     }
 
+    /**
+     * Find the first index corresponding to a person that gives a score > 0 to this chain.
+     * If idToCalculateScore == chainSize that means this chain is "dead".
+     * @param ts timestamp of the instant
+     */
     public void majID(Timestamp ts) {
-        for (int i = contaminationTs.size() - 1; i <= 0; i--) {
-            if (TimeStamp.getHoursDifference(contaminationTs.get(i), ts) >= 336.0) {
-                idToCalculateScore = i++;
-                return;
-            }
-            idToCalculateScore = -1;
-        }
+        int i = contaminationTs.size() - 1;
+        while (i >= 0 && TimeStamp.getHoursDifference(ts, contaminationTs.get(i)) < 336.0) i--;
+        idToCalculateScore = i + 1;
     }
 
     /**
@@ -88,15 +104,12 @@ public class ContaminationChain {
      * @return boolean to inform if score is 0 or not.
      */
     public boolean calculateScore(Timestamp time) {
-        if (idToCalculateScore == -1) return true;
-
         score = 0;
         // Browse contamination time
         double compare;
-        for (int i = idToCalculateScore; i < contaminationTs.size(); i++) {
+        for (int i = idToCalculateScore; i < chainSize; i++) {
             // Compare date of the contaminated person with the first one of the chain.
             compare = TimeStamp.getHoursDifference(time, contaminationTs.get(i));
-
             if (compare <= 168.0) {
                 score += 10;
             } else if (compare < 336.0) {

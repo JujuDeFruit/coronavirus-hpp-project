@@ -25,7 +25,7 @@ public class TestMain {
         String generatedDataLine = generatedDataBuffer.readLine();
         String testDataLine = testDataBuffer.readLine();
         while (generatedDataLine != null || testDataLine != null) {
-            assertEquals(generatedDataLine, testDataLine);
+            assertEquals(testDataLine, generatedDataLine);
             generatedDataLine = generatedDataBuffer.readLine();
             testDataLine = testDataBuffer.readLine();
         }
