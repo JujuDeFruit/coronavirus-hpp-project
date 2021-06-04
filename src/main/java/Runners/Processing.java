@@ -47,55 +47,7 @@ public class Processing implements Runnable {
 			while(currentPerson.getPerson_id() != -1) {
 				currentTimestamp = currentPerson.getDiagnosed_ts(); // timestamp when this person was contaminated
 
-				// 1. Recalculate score of the top 3 and reorder it if there is 3 or more chains
-				if (VectorOfContaminationChain_.size() >= 3) {
-					VectorOfContaminationChain_.get(0).calculateScore(currentTimestamp);
-					VectorOfContaminationChain_.get(1).calculateScore(currentTimestamp);
-					VectorOfContaminationChain_.get(2).calculateScore(currentTimestamp);
-					// Reorder top3 (needed for the estimation to work)
-					// score
-					int oldFirstScore = VectorOfContaminationChain_.get(0).getScore();
-					int oldSecondScore = VectorOfContaminationChain_.get(1).getScore();
-					int oldThirdScore = VectorOfContaminationChain_.get(2).getScore();
-					// new order
-					ContaminationChain first, second, third;
-					if( oldFirstScore > oldSecondScore ){
-						if( oldFirstScore > oldThirdScore ){
-							first = VectorOfContaminationChain_.get(0);
-							if( oldSecondScore > oldThirdScore ){
-								second = VectorOfContaminationChain_.get(1);
-								third = VectorOfContaminationChain_.get(2);
-							}else{
-								second = VectorOfContaminationChain_.get(2);
-								third = VectorOfContaminationChain_.get(1);
-							}
-						}else{
-							second = VectorOfContaminationChain_.get(0);
-							first = VectorOfContaminationChain_.get(2);
-							third = VectorOfContaminationChain_.get(1);
-						}
-					}else{
-						if( oldSecondScore > oldThirdScore ){
-							first = VectorOfContaminationChain_.get(1);
-							if( oldFirstScore > oldThirdScore ){
-								second = VectorOfContaminationChain_.get(0);
-								third = VectorOfContaminationChain_.get(2);
-							}else{
-								second = VectorOfContaminationChain_.get(2);
-								third = VectorOfContaminationChain_.get(0);
-							}
-						}else{
-							second = VectorOfContaminationChain_.get(1);
-							first = VectorOfContaminationChain_.get(2);
-							third = VectorOfContaminationChain_.get(0);
-						}
-					}
-					VectorOfContaminationChain_.set(0, first);
-					VectorOfContaminationChain_.set(1, second);
-					VectorOfContaminationChain_.set(2, third);
-				}
-
-				// 2. Find where the current person should be added
+				// 1. Find where the current person should be added
 					// Create new ContaminationChain when the contaminated id is equal to -1 meaning contaminated by "unknown"
 				if(currentPerson.getContaminated_by() == -1) {
 					VectorOfContaminationChain_.add(new ContaminationChain(currentPerson));
@@ -117,9 +69,66 @@ public class Processing implements Runnable {
 						}
 					}
 				}
+				// 2. Recalculate score of the top 3 and reorder it if there is 3 or more chains
+					// if one of the score is null then we suppress it and don't reorder
+				if (VectorOfContaminationChain_.size() >= 3) {
+					if (VectorOfContaminationChain_.get(0).calculateScore(currentTimestamp)) {
+						VectorOfContaminationChain_.remove(0);
+					} else {
+						if (VectorOfContaminationChain_.get(1).calculateScore(currentTimestamp)) {
+							VectorOfContaminationChain_.remove(1);
+						} else {
+							if (VectorOfContaminationChain_.get(2).calculateScore(currentTimestamp)) {
+								VectorOfContaminationChain_.remove(2);
+							} else {
+								// Reorder top3 (needed for the estimation to work)
+									// score
+								int oldFirstScore = VectorOfContaminationChain_.get(0).getScore();
+								int oldSecondScore = VectorOfContaminationChain_.get(1).getScore();
+								int oldThirdScore = VectorOfContaminationChain_.get(2).getScore();
+									// new order
+								ContaminationChain first, second, third;
+								if( oldFirstScore > oldSecondScore ){
+									if( oldFirstScore > oldThirdScore ){
+										first = VectorOfContaminationChain_.get(0);
+										if( oldSecondScore > oldThirdScore ){
+											second = VectorOfContaminationChain_.get(1);
+											third = VectorOfContaminationChain_.get(2);
+										}else{
+											second = VectorOfContaminationChain_.get(2);
+											third = VectorOfContaminationChain_.get(1);
+										}
+									}else{
+										second = VectorOfContaminationChain_.get(0);
+										first = VectorOfContaminationChain_.get(2);
+										third = VectorOfContaminationChain_.get(1);
+									}
+								}else{
+									if( oldSecondScore > oldThirdScore ){
+										first = VectorOfContaminationChain_.get(1);
+										if( oldFirstScore > oldThirdScore ){
+											second = VectorOfContaminationChain_.get(0);
+											third = VectorOfContaminationChain_.get(2);
+										}else{
+											second = VectorOfContaminationChain_.get(2);
+											third = VectorOfContaminationChain_.get(0);
+										}
+									}else{
+										second = VectorOfContaminationChain_.get(1);
+										first = VectorOfContaminationChain_.get(2);
+										third = VectorOfContaminationChain_.get(0);
+									}
+								}
+								VectorOfContaminationChain_.set(0, first);
+								VectorOfContaminationChain_.set(1, second);
+								VectorOfContaminationChain_.set(2, third);
+							}
+						}
+					}
+				}
 				// 3. Browse all chains (expect the first 3 which are the top 3) and estimate if there score can go
 				// higher than one of the top 3
-				if (VectorOfContaminationChain_.size() >= 3){
+				if (VectorOfContaminationChain_.size() >= 3){ // no point doing things if there are not 3 or more chains
 					int thirdScore = VectorOfContaminationChain_.get(2).getScore(); // we get it in memory to avoid some unnecessary memory access
 					// We browse the vector in descending order in order not to skip elements when removing "dead" chain
 					for (int i = VectorOfContaminationChain_.size()-1; i > 2; i--) {
@@ -166,6 +175,7 @@ public class Processing implements Runnable {
 											ContaminationChain mem1 = VectorOfContaminationChain_.get(2);
 											VectorOfContaminationChain_.set(2, currentChain);
 											VectorOfContaminationChain_.set(i, mem1);
+											thirdScore = chainScore;
 										}
 									}
 								}
@@ -176,7 +186,6 @@ public class Processing implements Runnable {
 					ContaminationChain first = VectorOfContaminationChain_.get(0);
 					ContaminationChain second = VectorOfContaminationChain_.get(1);
 					ContaminationChain third = VectorOfContaminationChain_.get(2);
-
 					outQueue_.add(new int[] {
 							first.getCountry_id(), first.getFirstPersonId(), first.getScore(),
 							second.getCountry_id(), second.getFirstPersonId(), second.getScore(),
@@ -193,56 +202,4 @@ public class Processing implements Runnable {
 			e.printStackTrace();
 		}
 	}
-
-//	/**
-//	 * Process who ..
-//	 * @param myPerson : the person taken in charge in the inQueue_
-//	 */
-//	private void processId(DataType myPerson) {
-//		currentTimestamp = myPerson.getDiagnosed_ts();
-//
-//		// Recalculate all scores and remove the ContaminationChain if its score is 0
-//		/*for (int i = 0; i < VectorOfContaminationChain_.size(); i++) {
-//			if(VectorOfContaminationChain_.get(i).calculateScore(currentTimestamp)) VectorOfContaminationChain_.remove(i);
-//		}*/
-//
-//		// Create new ContaminationChain when the contaminated id is equal to -1 meaning contaminated by "unknown"
-//		if(myPerson.getContaminated_by() == -1) {
-//			VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
-//		} else {
-//			// Else we search the chain that contains the contaminated id
-//			boolean ending = false;
-//			int i=0;
-//			while(i < VectorOfContaminationChain_.size() && !ending) {
-//				ending = VectorOfContaminationChain_.get(i).push(myPerson);
-//				if (ending && VectorOfContaminationChain_.get(i).calculateScore(currentTimestamp)) {
-//					VectorOfContaminationChain_.remove(i);
-//				}
-//				i++;
-//			}
-//
-//			// If ending is still false that means the person was contaminated by a chain with a score of 0 so it has been destroyed
-//			if(!ending) {
-//				VectorOfContaminationChain_.add(new ContaminationChain(myPerson));
-//			}
-//		}
-//
-//		// Forward the top3 to the outQueue
-//			// Sort ContaminationChain according to score
-//		VectorOfContaminationChain_.sort(Comparator.comparing(ContaminationChain::getScore));
-//			// Forward only when their is 3 or more ContaminationChain
-//		int size = VectorOfContaminationChain_.size();
-//		if (size >= 3) {
-//
-//			ContaminationChain first = VectorOfContaminationChain_.get(size - 1);
-//			ContaminationChain second = VectorOfContaminationChain_.get(size - 2);
-//			ContaminationChain third = VectorOfContaminationChain_.get(size - 3);
-//
-//			outQueue_.add(new int[] {
-//					first.getCountry_id(), first.getFirstPersonId(), first.getScore(),
-//					second.getCountry_id(), second.getFirstPersonId(), second.getScore(),
-//					third.getCountry_id(), third.getFirstPersonId(), third.getScore()
-//			});
-//		}
-//	}
 }
