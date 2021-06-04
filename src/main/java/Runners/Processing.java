@@ -1,6 +1,7 @@
 package Runners;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
@@ -147,13 +148,9 @@ public class Processing implements Runnable {
 										// first -> second
 										// second -> third
 										// third -> current chain
-										ContaminationChain mem1 = VectorOfContaminationChain_.get(0);
-										ContaminationChain mem2 = VectorOfContaminationChain_.get(1);
-										VectorOfContaminationChain_.set(0, currentChain);
-										VectorOfContaminationChain_.set(1, mem1);
-										mem1 = VectorOfContaminationChain_.get(2);
-										VectorOfContaminationChain_.set(2, mem2);
-										VectorOfContaminationChain_.set(i, mem1);
+										Collections.swap(VectorOfContaminationChain_, 0, i);
+										Collections.swap(VectorOfContaminationChain_, i, 1);
+										Collections.swap(VectorOfContaminationChain_, i, 2);
 										thirdScore = VectorOfContaminationChain_.get(2).getScore();
 									} else {
 										if (chainScore > VectorOfContaminationChain_.get(1).getScore()) {
@@ -161,19 +158,14 @@ public class Processing implements Runnable {
 											// current chain -> second
 											// second -> third
 											// third -> current chain
-											ContaminationChain mem1 = VectorOfContaminationChain_.get(1);
-											ContaminationChain mem2 = VectorOfContaminationChain_.get(2);
-											VectorOfContaminationChain_.set(1, currentChain);
-											VectorOfContaminationChain_.set(2, mem1);
-											VectorOfContaminationChain_.set(i, mem2);
+											Collections.swap(VectorOfContaminationChain_, 1, i);
+											Collections.swap(VectorOfContaminationChain_, i, 2);
 											thirdScore = VectorOfContaminationChain_.get(2).getScore();
 										} else {
 											// the current chain is third, we shift this way :
 											// current chain -> third
 											// third -> current chain
-											ContaminationChain mem1 = VectorOfContaminationChain_.get(2);
-											VectorOfContaminationChain_.set(2, currentChain);
-											VectorOfContaminationChain_.set(i, mem1);
+											Collections.swap(VectorOfContaminationChain_, 2, i);
 											thirdScore = chainScore;
 										}
 									}

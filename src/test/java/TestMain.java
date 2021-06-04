@@ -18,7 +18,7 @@ public class TestMain {
         FileReader generatedDataReader = new FileReader("src/main/resources/data.csv");
         BufferedReader generatedDataBuffer = new BufferedReader(generatedDataReader);
             // test data
-        FileReader testDataReader = new FileReader("src/main/resources/testData.csv");
+        FileReader testDataReader = new FileReader("src/main/resources/testDataOpt.csv");
         BufferedReader testDataBuffer = new BufferedReader(testDataReader);
 
         // Test if the files are identical
