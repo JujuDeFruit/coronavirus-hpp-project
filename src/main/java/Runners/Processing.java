@@ -25,9 +25,7 @@ public class Processing implements Runnable {
 
 	private final BlockingQueue<DataType> inQueue_;
 	private final BlockingQueue<int[]> outQueue_;
-	private Vector<ContaminationChain> VectorOfContaminationChain_=null;
-
-	private Timestamp currentTimestamp; // Not converted to local variable in order to optimize memory allocation
+	private Vector<ContaminationChain> VectorOfContaminationChain_;
 
 
 	public Processing(BlockingQueue<DataType> inQueue, BlockingQueue<int[]> outQueue, Vector<ContaminationChain> VectorOfContaminationChain){
@@ -45,7 +43,8 @@ public class Processing implements Runnable {
 			DataType currentPerson = inQueue_.take();
 			// While we don't reach the poison pill "-1" do:
 			while(currentPerson.getPerson_id() != -1) {
-				currentTimestamp = currentPerson.getDiagnosed_ts(); // timestamp when this person was contaminated
+				// Not converted to local variable in order to optimize memory allocation
+				Timestamp currentTimestamp = currentPerson.getDiagnosed_ts(); // timestamp when this person was contaminated
 
 				// 1. Find where the current person should be added
 					// Create new ContaminationChain when the contaminated id is equal to -1 meaning contaminated by "unknown"
