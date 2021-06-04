@@ -21,6 +21,7 @@ public class ContaminationChain {
     private int score;
     private final List<Integer> contaminationId;
     private final List<Timestamp> contaminationTs;
+    private int idToCalculateScore;
     private int chainSize;
 
     /**
@@ -41,6 +42,8 @@ public class ContaminationChain {
 
         // Set size to 1
         chainSize = 1;
+
+        idToCalculateScore = 0;
     }
 
     /**
@@ -61,11 +64,22 @@ public class ContaminationChain {
                     contaminationTs.add(person.getDiagnosed_ts());
                     score += 10;
                     chainSize += 1;
+                    majID(person.getDiagnosed_ts());
                     return 0;
                 }
             }
         }
         return 2;
+    }
+
+    public void majID(Timestamp ts) {
+        for (int i = contaminationTs.size() - 1; i <= 0; i--) {
+            if (TimeStamp.getHoursDifference(contaminationTs.get(i), ts) >= 336.0) {
+                idToCalculateScore = i++;
+                return;
+            }
+            idToCalculateScore = -1;
+        }
     }
 
     /**
@@ -74,12 +88,14 @@ public class ContaminationChain {
      * @return boolean to inform if score is 0 or not.
      */
     public boolean calculateScore(Timestamp time) {
+        if (idToCalculateScore == -1) return true;
+
         score = 0;
         // Browse contamination time
         double compare;
-        for (Timestamp ts : contaminationTs) {
+        for (int i = idToCalculateScore; i < contaminationTs.size(); i++) {
             // Compare date of the contaminated person with the first one of the chain.
-            compare = TimeStamp.getHoursDifference(time, ts);
+            compare = TimeStamp.getHoursDifference(time, contaminationTs.get(i));
 
             if (compare <= 168.0) {
                 score += 10;
@@ -96,6 +112,12 @@ public class ContaminationChain {
      * @return the number of person "in" the chain.
      */
     public int getChainSize() { return chainSize; }
+
+    /**
+     *
+     * @return the id where people in the chain starts having a score > 0.
+     */
+    public int getIdToCalculateScore() { return idToCalculateScore; }
 
     /**
      *

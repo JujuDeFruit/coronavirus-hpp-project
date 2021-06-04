@@ -133,8 +133,8 @@ public class Processing implements Runnable {
 					// We browse the vector in descending order in order not to skip elements when removing "dead" chain
 					for (int i = VectorOfContaminationChain_.size()-1; i > 2; i--) {
 						ContaminationChain currentChain = VectorOfContaminationChain_.get(i);
-						if(currentChain.getChainSize()*10 > thirdScore) {
-							// We have estimated that this chain can potentially enter the top 3 (rough estimation)
+						if((currentChain.getChainSize() - currentChain.getIdToCalculateScore())*10 > thirdScore) {
+							// We have estimated that this chain can potentially enter the top 3 (good estimation)
 							if (currentChain.calculateScore(currentTimestamp)){
 								// Precise calculation of the score and suppression of the chain if it is 0
 								VectorOfContaminationChain_.remove(i);

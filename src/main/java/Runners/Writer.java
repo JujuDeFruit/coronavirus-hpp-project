@@ -33,6 +33,7 @@ public class Writer implements Runnable {
 		int[] top3;
 		try {
 			top3 = iQueue.take();
+			int i = 0;
 			while(top3[0] != -1)
 			{
 				builder.setLength(0);
@@ -46,6 +47,9 @@ public class Writer implements Runnable {
 				//Write in file
 				writeResult();
 				top3= iQueue.take();
+
+				if (i % 10_000 == 0) System.out.println(i);
+				i++;
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

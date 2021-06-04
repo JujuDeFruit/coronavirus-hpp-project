@@ -40,7 +40,7 @@ public class TestProcessing {
 
 		// Check data
 			// test data
-		FileReader testDataReader = new FileReader("src/main/resources/testData.csv");
+		FileReader testDataReader = new FileReader("src/main/resources/testDataOpt.csv");
 		BufferedReader testDataBuffer = new BufferedReader(testDataReader);
 
 		try {
